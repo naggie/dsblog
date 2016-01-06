@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Darksky blog</title>
+        <link rel="stylesheet" href="main.css">
+        <meta name="viewport" content="width=device-width,user-scalable=no">
+
+        <!-- iOS/safar don't support the same requestfullscreen API but do
+        allow installing as a pseudo app. May as well do the same for chrome. -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <!-- hack to make :active work on touch -->
+    <body onmouseover="">
+        <div id="main"></div>
+        <img src="darksky-dark-bg.svg" />
+    </body>
+</html>
+
+
