@@ -41,6 +41,7 @@ nav a.selected {
 #content {
     width: 710px;
     margin:auto;
+    overflow-x:hidden;
 }
 
 .author-thumb {
@@ -74,7 +75,6 @@ article footer a {
 }
 
 article time {
-    margin-left:30px;
     vertical-align:middle;
 }
 
@@ -83,4 +83,15 @@ article section a:visited
 
 {
     color:#444;
+}
+
+
+
+@media only screen and (max-width: 720px) {
+    #content {
+        width:100%;
+    }
+
+    .post-image {
+    }
 }
