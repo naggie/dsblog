@@ -93,5 +93,9 @@ article section a:visited
     }
 
     .post-image {
+        width:710px;
+        position:relative;
+        left:50%;
+        margin-left:-355px;
     }
 }
