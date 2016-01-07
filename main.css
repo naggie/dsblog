@@ -78,6 +78,9 @@ article time {
     vertical-align:middle;
 }
 
+a:hover { color:black; }
+a:active { color:gray; }
+
 article section a,
 article section a:visited
 
