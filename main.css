@@ -42,3 +42,45 @@ nav a.selected {
     width: 710px;
     margin:auto;
 }
+
+.author-thumb {
+    height:40px;
+    width:40px;
+    border-radius:20px;
+    display:inline-block;
+    vertical-align:middle;
+}
+
+article {
+    border-bottom:1px solid #eee;
+}
+
+article header,
+article footer
+{
+    font-family: 'Raleway','Sans-serif';
+    padding:10px 0;
+}
+
+article .post-image {
+    opacity:0.6;
+    border:1px solid #eee;
+}
+
+article footer a {
+    text-decoration:none;
+    color:#444;
+    vertical-align:middle;
+}
+
+article time {
+    margin-left:30px;
+    vertical-align:middle;
+}
+
+article section a,
+article section a:visited
+
+{
+    color:#444;
+}
