@@ -12,6 +12,8 @@ body {
     background-image:url('world.png');
     background-position:center 40px;
     background-repeat:no-repeat;
+    text-rendering: geometricPrecision;
+    font-family: "Merriweather", serif;
 }
 
 h1 a, h2 a, h3 a, nav a,
