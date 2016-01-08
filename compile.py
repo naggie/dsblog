@@ -20,4 +20,16 @@ env = Environment(loader=FileSystemLoader('templates'))
 
 template = env.get_template('blog.html')
 filepath = os.path.join(build_dir,'index.html')
-template.stream().dump(filepath)
+
+articles = [
+    {
+        "title":"3 ways to improve your coffee",
+        "url":"google.com",
+        "image":"https://placeimg.com/710/100/tech",
+        "author_name":"Callan Bryant",
+        "published":"2nd Janurary 2015",
+    }
+ ]
+
+
+template.stream(articles=articles).dump(filepath)
