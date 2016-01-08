@@ -12,7 +12,7 @@
         {% if article.author_image %}
         <img class="author-thumb" src="{{article.author_image}}" alt="{{article.author_name}}" />
         {% endif %}
-        <a href="{{article.author_url}}">{{article.author_name}}</a> on
-        {{article.published}}
+        <a href="{{article.author_url}}">{{article.author_name}}</a>
+        <span> on {{article.published}}</span>
     </footer>
 </article>

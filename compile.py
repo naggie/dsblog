@@ -26,10 +26,13 @@ articles = [
         "title":"3 ways to improve your coffee",
         "url":"google.com",
         "image":"https://placeimg.com/710/100/tech",
+        "text":"""Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis 
+            aut e irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.""",
+        "author_image":"https://placeimg.com/100/100/tech",
         "author_name":"Callan Bryant",
-        "published":"2nd Janurary 2015",
+        "published":"2nd January 2015",
     }
- ]
+ ] *50
 
 
 template.stream(articles=articles).dump(filepath)

@@ -14,6 +14,7 @@ body {
     background-repeat:no-repeat;
     text-rendering: geometricPrecision;
     font-family: "Merriweather", serif;
+    font-size:18px;
 }
 
 h1 a, h2 a, h3 a, nav a,
@@ -57,13 +58,14 @@ nav a.selected {
 article {
     border-bottom:1px solid #eee;
     padding:10px 0;
+    margin-bottom:30px;
 }
 
 article header,
 article footer
 {
     font-family: 'Raleway','Sans-serif';
-    padding:10px 0;
+    padding:20px 0;
 }
 
 article .post-image {
@@ -79,9 +81,16 @@ article footer a {
     vertical-align:middle;
 }
 
-article time {
+article span {
     vertical-align:middle;
 }
+
+article section {
+    word-wrap: break-word;
+    font-size: 1.0em;
+    line-height: 1.7em;
+}
+
 
 a:hover { color:black; }
 a:active { color:gray; }
