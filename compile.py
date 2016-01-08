@@ -3,6 +3,11 @@ import os
 from shutil import copytree
 
 build_dir = 'build/'
+
+if os.path.exists(build_dir):
+    raise IOError('Remove build directory first')
+
+
 #
 script_dir = os.path.dirname(os.path.realpath(__file__))
 

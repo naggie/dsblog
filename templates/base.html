@@ -3,7 +3,7 @@
 <html>
     <head>
         <title>{% block title %}Darksky blog{% endblock %}</title>
-        <link rel="stylesheet" href="/static/main.css">
+        <link rel="stylesheet" href="static/main.css">
         <meta name="viewport" content="width=device-width,user-scalable=no">
 
         <!-- iOS/safar don't support the same requestfullscreen API but do
@@ -16,14 +16,12 @@
     <body onmouseover="">
         <nav>
             {% block nav %}
-            <img height="200" src="/static/darksky-light-bg.svg" />
+            <img height="200" src="static/darksky-light-bg.svg" />
             <br />
             <a class="selected" href="/">Blog</a>
-            <a href="/about/">About</a>
+            <a href="about/">About</a>
             <a href="https://boards.darksky.io/">Forum</a>
             <!-- <a href="/welcome/">VPN</a> --> <!-- VPN? What VPN? -->
-            <br />
-            <a href="/">&larr; More articles</a>
             {% endblock nav %}
         </nav>
         <div id="content">
