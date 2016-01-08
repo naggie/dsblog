@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!-- Want to join us? Email root at this top level domain -->
+<html>
+    <head>
+        <title>{% block title %}Darksky blog{% endblock %}</title>
+        <link rel="stylesheet" href="main.css">
+        <meta name="viewport" content="width=device-width,user-scalable=no">
+
+        <!-- iOS/safar don't support the same requestfullscreen API but do
+        allow installing as a pseudo app. May as well do the same for chrome. -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    </head>
+    <!-- hack to make :active work on touch -->
+    <body onmouseover="">
+        <nav>
+            {% block nav %}
+            <img height="200" src="darksky-light-bg.svg" />
+            <br />
+            <a class="selected" href="/">Blog</a>
+            <a href="/about/">About</a>
+            <a href="https://boards.darksky.io">Forum</a>
+            <!-- <a href="/welcome/">VPN</a> --> <!-- VPN? What VPN? -->
+            <br />
+            <a href="/">&larr; More articles</a>
+            {% endblock nav %}
+        </nav>
+        <div id="content">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </body>
+</html>
+
+
