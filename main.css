@@ -68,7 +68,9 @@ article footer
 
 article .post-image {
     opacity:0.6;
-    border:1px solid #eee;
+    outline:1px solid #eee;
+    width:710px;
+    height:100px;
 }
 
 article footer a {
