@@ -60,12 +60,9 @@ class Slugger():
 
             count+=1
             # a file name? add a number before the first dot to be safe
-            if '.' in slug:
-                parts = initial_slug.split('.')
-                parts[-2] += '-%' % count
-                slug = '.'.join(parts)
-            else:
-                slug = initial_slug + '-' + str(count)
+            parts = list(os.path.splitext(initial_slug))
+            parts[0] += '-%s' % initial_slug
+            slug = ''.join(parts)
 
 
 
@@ -87,7 +84,10 @@ def filter_articles(articles):
         for img in content.find_all('img'):
             filename = slugify(img['src'])
             filepath = os.path.join(build_dir,'images',filename)
-            src = img['src']
+
+            # TODO remove replacement once SSL certs are fixed
+            src = img['src'].replace('http://boards.darksky.io','http://localhost:8099')
+
             img['src'] = 'images/'+filename
 
             if os.path.exists(filepath):
