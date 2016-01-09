@@ -38,13 +38,13 @@ class Slugger():
     articles.sort(key=lambda a:a['published'],reverse=True)
     slugs = set()
 
-    def slugify(resource):
-        initial_slug = re.sub(r'[^\w\.]+','-',resource).strip('-').lower()
+    def slugify(self,resource):
+        initial_slug = re.sub(r'([^\w\.]+|\.\.\. )','-',resource).strip('-').lower()
 
         count = 0
         slug = initial_slug
         while True:
-            if slug not in in self.slugs:
+            if slug not in self.slugs:
                 self.slugs.add(slug)
                 return slug
 
@@ -70,7 +70,8 @@ def filter_articles(articles):
     # sort, oldest first (which has slug precedence)
     articles.sort(key=lambda a:a['published'],reverse=False)
     for article in articles:
-        article['url'] = slugify(article['url'])
+        article['url'] = slugify(article['title'])
+        print article['url']
 
     # now, sort for display
     articles.sort(key=lambda a:a['published'],reverse=True)
