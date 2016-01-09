@@ -70,10 +70,21 @@ class Discourse():
             for div in content.find_all('div',class_="meta"):
                 div.extract()
 
+            # look for best image
+            image = None
+            for img in content.find_all('img'):
+                try:
+                    if 'emoji' in img['class'] or 'avatar' in img['class']:
+                        continue
+                except KeyError:
+                    pass
+
+                image = img['src']
+
             articles.append({
                 "title":topic['title'],
                 "url": '/'.join([self.url,'t',topic['slug'],str(id)]),
-                #"image":"https://placeimg.com/710/100/tech",
+                "image": image, # first image
                 # fix internal image URLS which don't have protocol
                 "content":unicode(content),
                 "author_image":self.url+first_post["avatar_template"].format(size=200),

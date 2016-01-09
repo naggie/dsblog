@@ -29,7 +29,7 @@ articles = Discourse(
     url="http://localhost:8099",
     api_user="naggie",
     api_key=os.environ['API_KEY'],
-).list_articles('dj')
+).list_articles('facility automation')
 
 
 
