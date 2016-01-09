@@ -40,5 +40,7 @@ articles = [
 from crawlers import discourse
 articles = discourse.articles
 
+articles.sort(key=lambda a:a['published'],reverse=True)
+
 
 template.stream(articles=articles).dump(filepath)

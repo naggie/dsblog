@@ -42,6 +42,10 @@ class Discourse():
         for t in self.get(['c',id])['topic_list']['topics']:
             ids.append(t["id"])
 
+        # don't want this
+        category_definition_id = min(ids)
+        ids.remove(category_definition_id)
+
         # load topics (containing posts: article then comments)
         #usernames = set()
             #usernames.add(t['username'])
@@ -50,7 +54,7 @@ class Discourse():
             topic = self.get(['t',id])
             articles.append({
                 "title":topic['title'],
-                "url": '/'.join([self.url,topic['slug'],str(id)]),
+                "url": '/'.join([self.url,'t',topic['slug'],str(id)]),
                 #"image":"https://placeimg.com/710/100/tech",
                 "content":topic['post_stream']['posts'][0]['cooked'],
                 "author_image":"https://placeimg.com/100/100/tech",
