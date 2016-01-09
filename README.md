@@ -25,4 +25,4 @@ Users are identified by email address alone. A user object has the following att
   * name: full name
   * email
   * bio: HTML bio
-  * avatar: a square image URL
+  * avatar: a square image URL (200x200 or more preferred)

@@ -52,14 +52,15 @@ class Discourse():
         articles = list()
         for id in tqdm(ids):
             topic = self.get(['t',id])
+            first_post = topic['post_stream']['posts'][0]
             articles.append({
                 "title":topic['title'],
                 "url": '/'.join([self.url,'t',topic['slug'],str(id)]),
                 #"image":"https://placeimg.com/710/100/tech",
-                "content":topic['post_stream']['posts'][0]['cooked'],
-                "author_image":"https://placeimg.com/100/100/tech",
-                "author_name":"Callan Bryant",
-                "published":parse_date(topic['post_stream']['posts'][0]['created_at']),
+                "content":first_post['cooked'],
+                "author_image":self.url+first_post["avatar_template"].format(size=200),
+                "author_name":first_post["display_username"],
+                "published":parse_date(first_post['created_at']),
             })
 
         return articles
