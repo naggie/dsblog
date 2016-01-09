@@ -28,8 +28,7 @@ class Discourse():
 
         return response.json()
 
-    #def list_category(name='Blog'):
-    def list_articles(self,name='Facility Automation'):
+    def list_articles(self,name='Blog'):
         # find cetegory ID
         for cat in self.get(['categories'])['category_list']['categories']:
             id = cat['id']
@@ -71,5 +70,5 @@ articles = Discourse(
     url="http://localhost:8099",
     api_user="naggie",
     api_key=os.environ['API_KEY'],
-).list_articles()
+).list_articles('VPN')
 
