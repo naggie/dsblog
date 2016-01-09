@@ -1,6 +1,7 @@
 # may factor into generic crawler interface + processor
 import requests
 from iso8601 import parse_date
+from tqdm import tqdm
 
 class Discourse():
     def __init__(self,url,api_user,api_key):
@@ -50,7 +51,7 @@ class Discourse():
         #usernames = set()
             #usernames.add(t['username'])
         articles = list()
-        for id in ids:
+        for id in tqdm(ids):
             topic = self.get(['t',id])
             articles.append({
                 "title":topic['title'],
