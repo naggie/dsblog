@@ -67,8 +67,8 @@ class Discourse():
                     a['href'] = self.url.split('//')[0] + a['href']
 
             # remove useless meta links (a discourse-ism)
-            #for div in content.find_all(class="meta"):
-            #    div.extract()
+            for div in content.find_all('div',class_="meta"):
+                div.extract()
 
             articles.append({
                 "title":topic['title'],
