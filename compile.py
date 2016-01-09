@@ -38,6 +38,10 @@ class Slugger():
     articles.sort(key=lambda a:a['published'],reverse=True)
     slugs = set()
 
+    def __init__(self,initial):
+        self.slugs = set(initial)
+
+
     def slugify(self,resource):
         initial_slug = re.sub(r'([^\w\.]+|\.\.\. )','-',resource).strip('-').lower()
 
@@ -55,7 +59,7 @@ class Slugger():
                 parts[-2] += '-%' % count
                 slug = '.'.join(parts)
             else:
-                slug = initial_slug + '-' + count
+                slug = initial_slug + '-' + str(count)
 
 
 
@@ -66,17 +70,24 @@ class Slugger():
 # * Make slug for url path, giving precedence to older articles
 # * TODO when user profiles are implemented, add user info
 def filter_articles(articles):
-    slugify = Slugger().slugify
+    slugify = Slugger(['index']).slugify
     # sort, oldest first (which has slug precedence)
     articles.sort(key=lambda a:a['published'],reverse=False)
     for article in articles:
-        article['url'] = slugify(article['title'])
-        print article['url']
+        article['url'] = slugify(article['title'])+'.html'
+        article['local'] = True
 
     # now, sort for display
     articles.sort(key=lambda a:a['published'],reverse=True)
 
 filter_articles(articles)
+
 template = env.get_template('blog.html')
 filepath = os.path.join(build_dir,'index.html')
 template.stream(articles=articles).dump(filepath)
+
+template = env.get_template('article_page.html')
+for article in articles:
+    if article['local']:
+        filepath = os.path.join(build_dir,article['url'])
+        template.stream(article=article).dump(filepath)
