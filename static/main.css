@@ -116,3 +116,10 @@ article section a:visited
         margin-left:-355px;
     }
 }
+
+.emoji {
+    width:32px;
+    height:32px;
+    display:inline-block;
+    vertical-align:middle;
+}
