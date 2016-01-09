@@ -2,6 +2,10 @@ from jinja2 import Environment, FileSystemLoader
 import os
 import re
 from shutil import copytree,rmtree
+import PIL
+from bs4 import BeautifulSoup
+from tqdm import tqdm
+import requests
 
 
 build_dir = 'build/'
@@ -11,13 +15,15 @@ build_dir = 'build/'
 
 
 build_static_dir = os.path.join(build_dir,'static')
-build_image_dir = os.path.join(build_dir,'images')
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
 if os.path.exists(build_static_dir):
     rmtree(build_static_dir)
+
 copytree('static',build_static_dir)
 
+if not os.path.exists(os.path.join(build_dir,'images')):
+    os.mkdir(os.path.join(build_dir,'images'))
 
 env = Environment(loader=FileSystemLoader('templates'))
 
@@ -73,9 +79,30 @@ def filter_articles(articles):
     slugify = Slugger(['index']).slugify
     # sort, oldest first (which has slug precedence)
     articles.sort(key=lambda a:a['published'],reverse=False)
-    for article in articles:
+    for article in tqdm(articles):
         article['url'] = slugify(article['title'])+'.html'
         article['local'] = True
+
+        content = BeautifulSoup(article['content'],'html.parser')
+        for img in content.find_all('img'):
+            filename = slugify(img['src'])
+            filepath = os.path.join(build_dir,'images',filename)
+            src = img['src']
+            img['src'] = 'images/'+filename
+
+            if os.path.exists(filepath):
+                continue
+
+            r = requests.get(src, stream=True)
+            r.raise_for_status()
+            with open(filepath, 'wb') as f:
+                for chunk in r:
+                    f.write(chunk)
+
+        article['content'] = unicode(content)
+
+
+
 
     # now, sort for display
     articles.sort(key=lambda a:a['published'],reverse=True)
