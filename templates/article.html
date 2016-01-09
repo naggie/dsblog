@@ -13,6 +13,6 @@
         <img class="author-thumb" src="{{article.author_image}}" alt="{{article.author_name}}" />
         {% endif %}
         <a href="{{article.author_url}}">{{article.author_name}}</a>
-        <span> &nbsp; | &nbsp; {{article.published}}</span>
+        <span> &nbsp; | &nbsp; {{article.published.strftime('%-d %B %Y')}}</span>
     </footer>
 </article>

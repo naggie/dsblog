@@ -2,6 +2,7 @@ from jinja2 import Environment, FileSystemLoader
 import os
 from shutil import copytree,rmtree
 
+
 build_dir = 'build/'
 
 #if os.path.exists(build_dir):
@@ -22,6 +23,7 @@ template = env.get_template('blog.html')
 filepath = os.path.join(build_dir,'index.html')
 
 # example article
+from datetime import datetime
 articles = [
     {
         "title":"3 ways to improve your coffee",
@@ -31,7 +33,7 @@ articles = [
             aut e irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.""",
         "author_image":"https://placeimg.com/100/100/tech",
         "author_name":"Callan Bryant",
-        "published":"2nd January 2015",
+        "published":datetime.now(),
     }
  ] *50
 
