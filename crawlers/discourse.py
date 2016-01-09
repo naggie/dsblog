@@ -2,6 +2,8 @@
 import requests
 from iso8601 import parse_date
 from tqdm import tqdm
+import re
+from bs4 import BeautifulSoup
 
 class Discourse():
     def __init__(self,url,api_user,api_key):
@@ -53,11 +55,27 @@ class Discourse():
         for id in tqdm(ids,leave=True):
             topic = self.get(['t',id])
             first_post = topic['post_stream']['posts'][0]
+
+            content = BeautifulSoup(first_post['cooked'],'html.parser')
+            # repair all protocol-less URLS
+            for img in content.find_all('img'):
+                if img['src'].startswith('//'):
+                    img['src'] = self.url.split('//')[0] + img['src']
+
+            for a in content.find_all('a'):
+                if a['href'].startswith('//'):
+                    a['href'] = self.url.split('//')[0] + a['href']
+
+            # remove useless meta links (a discourse-ism)
+            #for div in content.find_all(class="meta"):
+            #    div.extract()
+
             articles.append({
                 "title":topic['title'],
                 "url": '/'.join([self.url,'t',topic['slug'],str(id)]),
                 #"image":"https://placeimg.com/710/100/tech",
-                "content":first_post['cooked'],
+                # fix internal image URLS which don't have protocol
+                "content":unicode(content),
                 "author_image":self.url+first_post["avatar_template"].format(size=200),
                 "author_name":first_post["display_username"],
                 "published":parse_date(first_post['created_at']),

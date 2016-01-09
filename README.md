@@ -16,6 +16,7 @@ Includes image
 
  * title
  * url: original URL
+ * content: html content with full qualified URLs/Images (including protocol)
  * ...
 
 ## DSBlog crawler article spec:
