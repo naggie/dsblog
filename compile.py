@@ -37,5 +37,8 @@ articles = [
     }
  ] *50
 
+from crawlers import discourse
+articles = discourse.articles
+
 
 template.stream(articles=articles).dump(filepath)
