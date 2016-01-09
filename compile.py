@@ -32,8 +32,32 @@ articles = Discourse(
 ).list_articles('dj')
 
 
-def slugify(resource):
-    return re.sub(r'[^\w\.]+','-',resource).strip('-').lower()
+
+class Slugger():
+    'Slugify with a memory: emit unique slugs'
+    articles.sort(key=lambda a:a['published'],reverse=True)
+    slugs = set()
+
+    def slugify(resource):
+        initial_slug = re.sub(r'[^\w\.]+','-',resource).strip('-').lower()
+
+        count = 0
+        slug = initial_slug
+        while True:
+            if slug not in in self.slugs:
+                self.slugs.add(slug)
+                return slug
+
+            count+=1
+            # a file name? add a number before the first dot to be safe
+            if '.' in slug:
+                parts = initial_slug.split('.')
+                parts[-2] += '-%' % count
+                slug = '.'.join(parts)
+            else:
+                slug = initial_slug + '-' + count
+
+
 
 
 # mutate articles suitable for rendering
@@ -42,8 +66,14 @@ def slugify(resource):
 # * Make slug for url path, giving precedence to older articles
 # * TODO when user profiles are implemented, add user info
 def filter_articles(articles):
-    articles.sort(key=lambda a:a['published'],reverse=True)
+    slugify = Slugger().slugify
+    # sort, oldest first (which has slug precedence)
+    articles.sort(key=lambda a:a['published'],reverse=False)
+    for article in articles:
+        article['url'] = slugify(article['url'])
 
+    # now, sort for display
+    articles.sort(key=lambda a:a['published'],reverse=True)
 
 filter_articles(articles)
 template = env.get_template('blog.html')
