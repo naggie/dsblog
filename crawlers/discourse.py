@@ -50,7 +50,7 @@ class Discourse():
         #usernames = set()
             #usernames.add(t['username'])
         articles = list()
-        for id in tqdm(ids):
+        for id in tqdm(ids,leave=True):
             topic = self.get(['t',id])
             first_post = topic['post_stream']['posts'][0]
             articles.append({
@@ -64,12 +64,4 @@ class Discourse():
             })
 
         return articles
-
-import os
-# TODO decide on an interface
-articles = Discourse(
-    url="http://localhost:8099",
-    api_user="naggie",
-    api_key=os.environ['API_KEY'],
-).list_articles('VPN')
 

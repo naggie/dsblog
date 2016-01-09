@@ -19,28 +19,30 @@ copytree('static',build_static_dir)
 
 env = Environment(loader=FileSystemLoader('templates'))
 
+
+# TODO proper interface
+from crawlers.discourse import Discourse
+import os
+# TODO decide on an interface
+
+print 'Discourse...'
+articles = Discourse(
+    url="http://localhost:8099",
+    api_user="naggie",
+    api_key=os.environ['API_KEY'],
+).list_articles('dj')
+
+
+# mutate articles suitable for rendering
+# * Localise images in HTML
+# * Generate post header image
+# * Make slug for url path, giving precedence to older articles
+# * TODO when user profiles are implemented, add user info
+def filter_articles(articles):
+    articles.sort(key=lambda a:a['published'],reverse=True)
+
+
+filter_articles(articles)
 template = env.get_template('blog.html')
 filepath = os.path.join(build_dir,'index.html')
-
-# example article
-from datetime import datetime
-articles = [
-    {
-        "title":"3 ways to improve your coffee",
-        "url":"google.com",
-        "image":"https://placeimg.com/710/100/tech",
-        "content":"""Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis 
-            aut e irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.""",
-        "author_image":"https://placeimg.com/100/100/tech",
-        "author_name":"Callan Bryant",
-        "published":datetime.now(),
-    }
- ] *50
-
-from crawlers import discourse
-articles = discourse.articles
-
-articles.sort(key=lambda a:a['published'],reverse=True)
-
-
 template.stream(articles=articles).dump(filepath)
