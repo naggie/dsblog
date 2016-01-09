@@ -21,12 +21,13 @@ env = Environment(loader=FileSystemLoader('templates'))
 template = env.get_template('blog.html')
 filepath = os.path.join(build_dir,'index.html')
 
+# example article
 articles = [
     {
         "title":"3 ways to improve your coffee",
         "url":"google.com",
         "image":"https://placeimg.com/710/100/tech",
-        "text":"""Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis 
+        "content":"""Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis 
             aut e irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.""",
         "author_image":"https://placeimg.com/100/100/tech",
         "author_name":"Callan Bryant",
