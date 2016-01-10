@@ -24,8 +24,6 @@ if os.path.exists(build_static_dir):
 
 copytree('static',build_static_dir)
 
-if not os.path.exists(os.path.join(build_dir,'images')):
-    os.mkdir(os.path.join(build_dir,'images'))
 
 env = Environment(loader=FileSystemLoader('templates'))
 
@@ -43,10 +41,9 @@ articles = Discourse(
 
 class Slugger():
     'Slugify with a memory: emit unique slugs'
-    articles.sort(key=lambda a:a['published'],reverse=True)
     slugs = set()
 
-    def __init__(self,initial):
+    def __init__(self,initial=[]):
         self.slugs = set(initial)
 
 
@@ -56,6 +53,7 @@ class Slugger():
         count = 0
         slug = initial_slug
         while True:
+            print slug
             if slug not in self.slugs:
                 self.slugs.add(slug)
                 return slug
@@ -63,8 +61,56 @@ class Slugger():
             count+=1
             # a file name? add a number before the first dot to be safe
             parts = list(os.path.splitext(initial_slug))
-            parts[0] += '-%s' % initial_slug
+            parts[0] += '-%s' % count
             slug = ''.join(parts)
+
+
+class Localizer():
+    'Localise given remote URLs'
+    map = dict()
+
+    def __init__(self,local_dir,url):
+
+        if not os.path.exists(local_dir):
+            os.mkdir(local_dir)
+
+        self.local_dir = local_dir
+        self.url = url.strip('/')
+
+        self.slugify = Slugger().slugify
+
+
+    def localize(self,url):
+        'return a new local URL for the given resource, deferring download'
+        if url in self.map:
+            return self.map[url]
+
+        filename = self.slugify(url)
+        filepath = os.path.join(self.local_dir,filename)
+
+        self.map[url] = filepath
+
+        return self.url + '/' + filename
+
+
+    def download(self):
+        "download all deferred resources if they don't already exist"
+
+        for url,filepath in self.map.items():
+            if os.path.exists(filepath):
+                del self.map[url]
+
+        if not self.map:
+            return
+
+        print "Localising new images..."
+        for url,filepath in tqdm(self.map.items(),leave=True):
+            r = requests.get(url, stream=True)
+            if r.status_code == 200:
+                with open(filepath, 'wb') as f:
+                    for chunk in r:
+                        f.write(chunk)
+
 
 
 def make_header_image(img):
@@ -85,42 +131,37 @@ def make_header_image(img):
 # * TODO when user profiles are implemented, add user info
 def filter_articles(articles):
     slugify = Slugger(['index']).slugify
+    localiser = Localizer(
+            local_dir = os.path.join(build_dir,'images'),
+            url = 'images/',
+    )
+
     # sort, oldest first (which has slug precedence)
     articles.sort(key=lambda a:a['published'],reverse=False)
-    print 'Processing articles...'
-    for article in tqdm(articles,leave=True):
+    for article in articles:
         article['url'] = slugify(article['title'])+'.html'
         article['local'] = True
 
+        # TODO remove replacement once SSL certs are fixed
+        article["content"] = article["content"].replace('http://boards.darksky.io','http://localhost:8099')
+        if article.get("image"):
+            article["image"] = article["image"].replace('http://boards.darksky.io','http://localhost:8099')
+        if article.get("author_image"):
+            article["author_image"] = article["author_image"].replace('http://boards.darksky.io','http://localhost:8099')
+
         content = BeautifulSoup(article['content'],'html.parser')
         for img in content.find_all('img'):
-            filename = slugify(img['src'])
-            filepath = os.path.join(build_dir,'images',filename)
+            img['src'] = localiser.localize(img["src"])
 
-            # TODO remove replacement once SSL certs are fixed
-            src = img['src'].replace('http://boards.darksky.io','http://localhost:8099')
-
-            img['src'] = 'images/'+filename
-
-            if os.path.exists(filepath):
-                continue
-
-            r = requests.get(src, stream=True)
-            r.raise_for_status()
-            with open(filepath, 'wb') as f:
-                for chunk in r:
-                    f.write(chunk)
 
         article['content'] = unicode(content)
+        article['author_image'] = localiser.localize(article['author_image'])
 
         if article.get('image'):
             filename = slugify('header-'+article['image'])
             filepath = os.path.join(build_dir,'images',filename)
 
-
-            # TODO perhaps create manifest of images to download
-
-            src = article['image'].replace('http://boards.darksky.io','http://localhost:8099')
+            src = article['image']
             article['image'] = 'images/'+filename
 
             if os.path.exists(filepath):
@@ -148,6 +189,8 @@ def filter_articles(articles):
 
 
         article['excerpt'] = excerpt
+
+    localiser.download()
 
 
 
