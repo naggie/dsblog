@@ -6,7 +6,12 @@
         {% endif %}
     </header>
     <section>
+        {% if excerpt %}
+        {{article.excerpt}}
+        <a href="{{article.url}}">Read more...</a>
+        {% else %}
         {{article.content}}
+        {% endif %}
     </section>
     <footer>
         {% if article.author_image %}

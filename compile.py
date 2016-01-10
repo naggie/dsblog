@@ -135,6 +135,17 @@ def filter_articles(articles):
                 article['image'] = None
                 pass
 
+        excerpt = unicode()
+        for p in content.find_all('p'):
+            for img in p.find_all('img'):
+                img.extract()
+
+            excerpt += unicode(p)
+            if len(excerpt) > 140:
+                break
+
+
+        article['excerpt'] = excerpt
 
 
 
@@ -146,7 +157,7 @@ filter_articles(articles)
 
 template = env.get_template('blog.html')
 filepath = os.path.join(build_dir,'index.html')
-template.stream(articles=articles).dump(filepath)
+template.stream(articles=articles,excerpt=True).dump(filepath)
 
 template = env.get_template('article_page.html')
 for article in articles:
