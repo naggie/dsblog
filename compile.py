@@ -154,9 +154,7 @@ def filter_articles(articles):
 
 
         article['content'] = unicode(content)
-        print article['author_image']
         article['author_image'] = localiser.localize(article['author_image'])
-        print article['author_image']
 
         if article.get('image'):
             filename = slugify('header-'+article['image'])
