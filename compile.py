@@ -53,7 +53,6 @@ class Slugger():
         count = 0
         slug = initial_slug
         while True:
-            print slug
             if slug not in self.slugs:
                 self.slugs.add(slug)
                 return slug
@@ -83,7 +82,7 @@ class Localizer():
     def localize(self,url):
         'return a new local URL for the given resource, deferring download'
         if url in self.map:
-            return self.map[url]
+            return self.url+'/'+os.path.basename(self.map[url])
 
         filename = self.slugify(url)
         filepath = os.path.join(self.local_dir,filename)
@@ -155,7 +154,9 @@ def filter_articles(articles):
 
 
         article['content'] = unicode(content)
+        print article['author_image']
         article['author_image'] = localiser.localize(article['author_image'])
+        print article['author_image']
 
         if article.get('image'):
             filename = slugify('header-'+article['image'])
