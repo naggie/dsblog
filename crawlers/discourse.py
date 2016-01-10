@@ -37,6 +37,11 @@ class Discourse():
             if img['src'].startswith('//'):
                 img['src'] = self.url.split('//')[0] + img['src']
 
+        # repair all domain-less
+        for img in content.find_all('img'):
+            if img['src'].startswith('/'):
+                img['src'] = self.url + img['src']
+
         for a in content.find_all('a'):
             if a['href'].startswith('//'):
                 a['href'] = self.url.split('//')[0] + a['href']

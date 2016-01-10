@@ -79,7 +79,7 @@ class Localizer():
         self.slugify = Slugger().slugify
 
 
-    def localize(self,url):
+    def localise(self,url):
         'return a new local URL for the given resource, deferring download'
         if url in self.map:
             return self.url+'/'+os.path.basename(self.map[url])
@@ -90,6 +90,15 @@ class Localizer():
         self.map[url] = filepath
 
         return self.url + '/' + filename
+
+
+    def localise_images(self,html):
+        content = BeautifulSoup(html,'html.parser')
+        for img in content.find_all('img'):
+            if img['src'].startswith('http'):
+                img['src'] = self.localise(img["src"])
+
+        return unicode(content)
 
 
     def download(self):
@@ -148,13 +157,8 @@ def filter_articles(articles):
         if article.get("author_image"):
             article["author_image"] = article["author_image"].replace('http://boards.darksky.io','http://localhost:8099')
 
-        content = BeautifulSoup(article['content'],'html.parser')
-        for img in content.find_all('img'):
-            img['src'] = localiser.localize(img["src"])
-
-
-        article['content'] = unicode(content)
-        article['author_image'] = localiser.localize(article['author_image'])
+        article['content'] = localiser.localise_images(article['content'])
+        article['author_image'] = localiser.localise(article['author_image'])
 
         if article.get('image'):
             filename = slugify('header-'+article['image'])
@@ -178,6 +182,7 @@ def filter_articles(articles):
                 pass
 
         excerpt = unicode()
+        content = BeautifulSoup(article['content'],'html.parser')
         for p in content.find_all('p'):
             for img in p.find_all('img'):
                 img.extract()
@@ -188,6 +193,16 @@ def filter_articles(articles):
 
 
         article['excerpt'] = excerpt
+
+        for c in article['comments']:
+            # TODO remove replacement once SSL certs are fixed
+            c["content"] = c["content"].replace('http://boards.darksky.io','http://localhost:8099')
+            if c.get("author_image"):
+                c["author_image"] = c["author_image"].replace('http://boards.darksky.io','http://localhost:8099')
+
+            c['content'] = localiser.localise_images(c["content"])
+            c['author_image'] = localiser.localise(c['author_image'])
+
 
     localiser.download()
 

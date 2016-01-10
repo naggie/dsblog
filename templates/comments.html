@@ -1,20 +1,15 @@
 <article>
     <header>
-        <h3>95 comments</h3>
+        <h3>{{ article.comments|length }} comments</h3>
     </header>
 
-    <section>
-        Blah blah
-    </section>
-    <section>
-        Blah blah
-    </section>
-    <section>
-        Blah blah
-    </section>
-    <section>
-        Blah blah
-    </section>
+    {% for comment in article.comments %}
+        <section>
+            <img class="author-thumb" src="{{comment.author_image}}" alt="{{comment.author_name}}" />
+            <a href="{{comment.author_url}}">{{comment.author_name}}</a>
+            {{comment.content}}
+        </section>
+    {% endfor %}
 
     <footer>
     </footer>
