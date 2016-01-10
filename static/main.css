@@ -55,19 +55,19 @@ nav a.selected {
     margin-right:10px;
 }
 
-article {
+#content > article {
     border-bottom:1px solid #eee;
     padding:10px 0;
     margin-bottom:30px;
 }
 
-article header,
-article footer
+article > header,
+article > footer
 {
     font-family: 'Raleway','Sans-serif';
 }
 
-article footer {
+article >  footer {
     padding:20px 0;
 }
 
@@ -79,17 +79,17 @@ article .post-image {
     margin:15px 0;
 }
 
-article footer a {
+article > footer a {
     text-decoration:none;
     color:#444;
     vertical-align:middle;
 }
 
-article span {
+article > span {
     vertical-align:middle;
 }
 
-article section {
+article > section {
     word-wrap: break-word;
     font-size: 1.0em;
     line-height: 1.7em;
