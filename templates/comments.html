@@ -2,12 +2,16 @@
     <h3>{{ article.comments|length }} comments</h3>
 
     {% for comment in article.comments %}
-        <div class="comment">
-            <img class="author-thumb" src="{{comment.author_image}}" alt="{{comment.author_name}}" />
-            <a class="author-name" href="{{comment.author_url}}">{{comment.author_name}}</a>
-            &nbsp; {# TODO better CSS and divs #}
-            {{comment.content}}
-        </div>
+    <div class="comment">
+        <img class="author-thumb" src="{{comment.author_image}}" alt="{{comment.author_name}}" />
+        <a class="author-name" href="{{comment.author_url}}">{{comment.author_name}}</a>
+        &nbsp; {# TODO better CSS and divs #}
+        {{comment.content}}
+    </div>
     {% endfor %}
+
+    {% if article.comments_url %}
+    <p> <a href="{{article.comments_url}}">Leave a comment...</a></p>
+    {% endif %}
 
 </div>
