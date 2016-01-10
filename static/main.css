@@ -65,6 +65,9 @@ article header,
 article footer
 {
     font-family: 'Raleway','Sans-serif';
+}
+
+article footer {
     padding:20px 0;
 }
 
@@ -73,6 +76,7 @@ article .post-image {
     outline:1px solid #eee;
     width:710px;
     height:100px;
+    margin:15px 0;
 }
 
 article footer a {
