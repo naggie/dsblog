@@ -117,13 +117,15 @@ def filter_articles(articles):
             filename = slugify('header-'+article['image'])
             filepath = os.path.join(build_dir,'images',filename)
 
-            if os.path.exists(filepath):
-                continue
 
             # TODO perhaps create manifest of images to download
 
             src = article['image'].replace('http://boards.darksky.io','http://localhost:8099')
             article['image'] = 'images/'+filename
+
+            if os.path.exists(filepath):
+                continue
+
             response = requests.get(src)
             response.raise_for_status()
             imgdata = StringIO(response.content)
