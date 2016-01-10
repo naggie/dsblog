@@ -115,6 +115,11 @@ article section a:visited
         left:50%;
         margin-left:-355px;
     }
+
+    section img {
+        max-width:100%;
+        height:inherit;
+    }
 }
 
 .emoji {
