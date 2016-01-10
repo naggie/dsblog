@@ -22,7 +22,7 @@ a,a:visited
     color:#444;
 }
 
-h1, h2, h3, nav
+h1, h2, h3, nav, a.author-name
 {
     font-family: 'Raleway','Sans-serif';
     color:#444;
@@ -33,7 +33,7 @@ header h1, header h2, nav {
     text-transform:uppercase;
 }
 
-header a, nav a {
+header a, nav a, a.author-name {
     text-decoration:none;
 }
 
@@ -152,4 +152,8 @@ blockquote {
 .avatar {
     vertical-align:middle;
     margin-right:10px;
+}
+
+.comment {
+    margin:80px 0;
 }
