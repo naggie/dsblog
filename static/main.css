@@ -128,3 +128,14 @@ article section a:visited
     display:inline-block;
     vertical-align:middle;
 }
+
+blockquote {
+    border-left:3px solid #eee;
+    margin:0;
+    padding:20px;
+}
+
+.avatar {
+    vertical-align:middle;
+    margin-right:10px;
+}

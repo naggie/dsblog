@@ -201,7 +201,7 @@ filter_articles(articles)
 
 template = env.get_template('blog.html')
 filepath = os.path.join(build_dir,'index.html')
-template.stream(articles=articles,excerpt=True).dump(filepath)
+template.stream(articles=articles).dump(filepath)
 
 template = env.get_template('article_page.html')
 for article in articles:

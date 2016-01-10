@@ -1,12 +1,13 @@
 <article>
     <header>
         <h2><a href="{{article.url}}">{{article.title}}</a></h2>
-        {% if article.image %}
+        {% if article.image and articles %}
         <img class="post-image" width="710" height="100" src="{{article.image}}" />
         {% endif %}
     </header>
     <section>
-        {% if excerpt %}
+        {% if articles %}
+        {# this should be an excerpt #}
         {{article.excerpt}}
         <a href="{{article.url}}">Read more...</a>
         {% else %}
