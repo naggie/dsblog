@@ -114,10 +114,10 @@ article section a:visited
     }
 
     .post-image {
-        width:710px;
         position:relative;
+        width:710px;
         left:50%;
-        margin-left:-355px;
+        margin-left:-355px!important;
     }
 
     section img {
