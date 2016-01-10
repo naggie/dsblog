@@ -80,6 +80,7 @@ class Discourse():
                     pass
 
                 image = img['src']
+                break
 
             articles.append({
                 "title":topic['title'],

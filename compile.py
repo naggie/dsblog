@@ -1,3 +1,4 @@
+from __future__ import division
 from jinja2 import Environment, FileSystemLoader
 import os
 import re
@@ -67,6 +68,13 @@ class Slugger():
 
 
 def make_header_image(img):
+    img = img.resize((710,int(img.height*710/img.width)),Image.ANTIALIAS)
+    img = img.crop((
+        0,
+        int(img.height/2)-50,
+        710,
+        int(img.height/2)+50,
+    ))
     return img
 
 
@@ -79,7 +87,8 @@ def filter_articles(articles):
     slugify = Slugger(['index']).slugify
     # sort, oldest first (which has slug precedence)
     articles.sort(key=lambda a:a['published'],reverse=False)
-    for article in tqdm(articles):
+    print 'Processing articles...'
+    for article in tqdm(articles,leave=True):
         article['url'] = slugify(article['title'])+'.html'
         article['local'] = True
 
