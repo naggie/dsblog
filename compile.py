@@ -2,10 +2,11 @@ from jinja2 import Environment, FileSystemLoader
 import os
 import re
 from shutil import copytree,rmtree
-import PIL
+from PIL import Image
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 import requests
+from StringIO import StringIO
 
 
 build_dir = 'build/'
@@ -65,6 +66,8 @@ class Slugger():
             slug = ''.join(parts)
 
 
+def make_header_image(img):
+    return img
 
 
 # mutate articles suitable for rendering
@@ -100,6 +103,29 @@ def filter_articles(articles):
                     f.write(chunk)
 
         article['content'] = unicode(content)
+
+        if article.get('image'):
+            filename = slugify('header-'+article['image'])
+            filepath = os.path.join(build_dir,'images',filename)
+
+            if os.path.exists(filepath):
+                continue
+
+            # TODO perhaps create manifest of images to download
+
+            src = article['image'].replace('http://boards.darksky.io','http://localhost:8099')
+            article['image'] = 'images/'+filename
+            response = requests.get(src)
+            response.raise_for_status()
+            imgdata = StringIO(response.content)
+            try:
+                img = Image.open(imgdata)
+                img = make_header_image(img)
+                img.save(filepath)
+            except IOError:
+                article['image'] = None
+                pass
+
 
 
 
