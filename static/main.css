@@ -17,14 +17,24 @@ body {
     font-size:18px;
 }
 
-h1 a, h2 a, h3 a, nav a,
-h1 a:visited, h2 a:visited, h3 a:visited, nav a:visited
+a,a:visited
 {
-    text-transform:uppercase;
-    font-family: 'Raleway','Sans-serif';
-    text-decoration:none;
-    letter-spacing:1px;
     color:#444;
+}
+
+h1, h2, h3, nav
+{
+    font-family: 'Raleway','Sans-serif';
+    color:#444;
+    letter-spacing:1px;
+}
+
+header h1, header h2, nav {
+    text-transform:uppercase;
+}
+
+header a, nav a {
+    text-decoration:none;
 }
 
 nav {
