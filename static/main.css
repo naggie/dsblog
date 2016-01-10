@@ -157,3 +157,9 @@ blockquote {
 .comment {
     margin:80px 0;
 }
+
+hr {
+    border: 0;
+    height: 0;
+    border-top:1px dashed #eee;
+}
