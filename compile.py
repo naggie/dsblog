@@ -35,7 +35,7 @@ articles = Discourse(
     url="http://localhost:8099",
     api_user="naggie",
     api_key=os.environ['API_KEY'],
-).list_articles('facility automation')
+).list_articles('blog')
 
 
 
@@ -123,15 +123,18 @@ class Localizer():
 
         print "Localising new images..."
         for url,filepath in tqdm(self.remote_map.items(),leave=True):
-            r = requests.get(url, stream=True)
-            if r.status_code == 200:
-                with open(filepath, 'wb') as f:
-                    for chunk in r:
-                        f.write(chunk)
-            else:
-                for u,f in self.local_map.items():
-                    if f == filepath:
-                        del self.local_map[u]
+            try:
+                r = requests.get(url, stream=True)
+                if r.status_code == 200:
+                    with open(filepath, 'wb') as f:
+                        for chunk in r:
+                            f.write(chunk)
+                else:
+                    for u,f in self.local_map.items():
+                        if f == filepath:
+                            del self.local_map[u]
+            except requests.exceptions.ConnectionError:
+                continue
 
 
     def annotate_images(self,html,max_width=710):

@@ -85,8 +85,8 @@ class Discourse():
             ids.append(t["id"])
 
         # don't want any category definition posts
-        category_definition_id = min(ids)
-        ids.remove(category_definition_id)
+        #category_definition_id = min(ids)
+        #ids.remove(category_definition_id)
 
         # load topics (containing posts: article then comments)
         #usernames = set()
