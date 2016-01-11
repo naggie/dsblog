@@ -167,19 +167,17 @@ def filter_articles(articles):
             src = article['image']
             article['image'] = 'images/'+filename
 
-            if os.path.exists(filepath):
-                continue
-
-            response = requests.get(src)
-            response.raise_for_status()
-            imgdata = StringIO(response.content)
-            try:
-                img = Image.open(imgdata)
-                img = make_header_image(img)
-                img.save(filepath)
-            except IOError:
-                article['image'] = None
-                pass
+            if not os.path.exists(filepath):
+                response = requests.get(src)
+                response.raise_for_status()
+                imgdata = StringIO(response.content)
+                try:
+                    img = Image.open(imgdata)
+                    img = make_header_image(img)
+                    img.save(filepath)
+                except IOError:
+                    article['image'] = None
+                    pass
 
         excerpt = unicode()
         content = BeautifulSoup(article['content'],'html.parser')

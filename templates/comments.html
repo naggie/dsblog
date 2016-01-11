@@ -1,5 +1,9 @@
 <div class="comments">
+    {% if article.comments|length == 1 %}
+    <h3>{{ article.comments|length }} comment</h3>
+    {% elif article.comments %}
     <h3>{{ article.comments|length }} comments</h3>
+    {% endif %}
 
     {% for comment in article.comments %}
     <div class="comment">

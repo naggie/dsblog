@@ -1,12 +1,13 @@
 DSBLOG, the Darksky Blog Aggregator
 ===================================
 
-DSBLOG aggregates articles from the following sources:
+DSBLOG aggregates articles and user profiles from the following sources:
 
  1. A discourse blog category
  2. A ghost blog
+ 3. Static YAML files
 
- Whilst featuring the Author profiles.
+ In the defined order of precedence.
 
 
 
@@ -37,5 +38,3 @@ Users are identified by email address alone. A user object has the following att
   * bio: HTML bio
   * avatar: a square image URL (200x200 or more preferred)
   * website
-  * twitter
-  * linkedin
