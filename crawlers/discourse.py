@@ -75,6 +75,7 @@ class Discourse():
         for cat in self.get(['categories'])['category_list']['categories']:
             id = cat['id']
             if name.lower() == cat['name'].lower():
+                self.cat_name = cat['name']
                 break
         else:
             raise IOError('Could not find category: %s'%name)
@@ -84,9 +85,6 @@ class Discourse():
         for t in self.get(['c',id])['topic_list']['topics']:
             ids.append(t["id"])
 
-        # don't want any category definition posts
-        #category_definition_id = min(ids)
-        #ids.remove(category_definition_id)
 
         # load topics (containing posts: article then comments)
         #usernames = set()
@@ -95,6 +93,11 @@ class Discourse():
         for id in tqdm(ids,leave=True):
             topic = self.get(['t',id])
             first_post = topic['post_stream']['posts'][0]
+
+            # don't want any category definition posts
+            if topic['title'].startswith('About the %s category' % self.cat_name):
+                continue
+
             content = self.normalise_html(first_post['cooked'])
 
             comments = list()
