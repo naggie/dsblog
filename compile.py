@@ -66,7 +66,11 @@ class Slugger():
 
 class Localizer():
     'Localise given remote URLs'
-    map = dict()
+    # original URLS -> filesystem path
+    remote_map = dict()
+
+    # new URLS -> filesystem path
+    local_map = dict()
 
     def __init__(self,local_dir,url):
 
@@ -81,22 +85,28 @@ class Localizer():
 
     def localise(self,url):
         'return a new local URL for the given resource, deferring download'
-        if url in self.map:
-            return self.url+'/'+os.path.basename(self.map[url])
+        # data-url? already local
+        if url.startswith('data'):
+            return url
+
+        if url in self.remote_map:
+            return self.url+'/'+os.path.basename(self.remote_map[url])
 
         filename = self.slugify(url)
         filepath = os.path.join(self.local_dir,filename)
 
-        self.map[url] = filepath
+        new_url = self.url + '/' + filename
 
-        return self.url + '/' + filename
+        self.remote_map[url] = filepath
+        self.local_map[new_url] = filepath
+
+        return new_url
 
 
     def localise_images(self,html):
         content = BeautifulSoup(html,'html.parser')
         for img in content.find_all('img'):
-            if img['src'].startswith('http'):
-                img['src'] = self.localise(img["src"])
+            img['src'] = self.localise(img["src"])
 
         return unicode(content)
 
@@ -104,21 +114,48 @@ class Localizer():
     def download(self):
         "download all deferred resources if they don't already exist"
 
-        for url,filepath in self.map.items():
+        for url,filepath in self.remote_map.items():
             if os.path.exists(filepath):
-                del self.map[url]
+                del self.remote_map[url]
 
-        if not self.map:
+        if not self.remote_map:
             return
 
         print "Localising new images..."
-        for url,filepath in tqdm(self.map.items(),leave=True):
+        for url,filepath in tqdm(self.remote_map.items(),leave=True):
             r = requests.get(url, stream=True)
             if r.status_code == 200:
                 with open(filepath, 'wb') as f:
                     for chunk in r:
                         f.write(chunk)
+            else:
+                for u,f in self.local_map.items():
+                    if f == filepath:
+                        del self.local_map[u]
 
+
+    def annotate_images(self,html,max_width=710):
+        'Add (scaled) width/height to images to prevent DOM reflow thrashing as images are loaded. RUN AFTER DOWNLOAD'
+        soup = BeautifulSoup(html, 'html.parser')
+
+        for img in soup.find_all('img'):
+            if not img.get("width") or not img.get("height"):
+                if img["src"].startswith('data'):
+                    # data URI, deterministic as already loaded. No need.
+                    return
+
+                filepath = self.local_map[img["src"]]
+
+                try:
+                    image = Image.open(filepath)
+                except IOError:
+                    continue
+
+                factor = min(max_width,image.width)/image.width
+                img['width'] = int(image.width*factor)
+                img['height'] = int(image.height*factor)
+
+        return unicode(soup)
 
 
 def make_header_image(img):
@@ -130,6 +167,9 @@ def make_header_image(img):
         int(img.height/2)+50,
     ))
     return img
+
+
+
 
 
 # mutate articles suitable for rendering
@@ -203,6 +243,15 @@ def filter_articles(articles):
 
 
     localiser.download()
+
+    print "Annotating images..."
+    for article in tqdm(articles,leave=True):
+        article["content"] = localiser.annotate_images(article["content"])
+
+
+        if article.get("comments"):
+            for comment in article["comments"]:
+                comment["content"] = localiser.annotate_images(comment["content"])
 
 
 
