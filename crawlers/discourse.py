@@ -7,10 +7,11 @@ from bs4 import BeautifulSoup
 from .crawler import Crawler
 
 class Discourse(Crawler):
-    def __init__(self,url,api_user,api_key):
+    def __init__(self,url,api_user,api_key,category="Blog"):
         self.url = url.strip('/')
         self.api_key = api_key
         self.api_user = api_user
+        self.category = category
 
     def get(self,path):
         'get an API URL where list path is transformed into a JSON request and parsed'
@@ -72,12 +73,13 @@ class Discourse(Crawler):
         return image
 
 
-    def crawl(self,name='Blog'):
+    def crawl(self):
         # find cetegory ID
         for cat in self.get(['categories'])['category_list']['categories']:
             id = cat['id']
-            if name.lower() == cat['name'].lower():
-                self.cat_name = cat['name']
+            if self.category.lower() == cat['name'].lower():
+                # correct case
+                self.category = cat['name']
                 break
         else:
             raise IOError('Could not find category: %s'%name)
@@ -96,7 +98,7 @@ class Discourse(Crawler):
             first_post = topic['post_stream']['posts'][0]
 
             # don't want any category definition posts
-            if topic['title'].startswith('About the %s category' % self.cat_name):
+            if topic['title'].startswith('About the %s category' % self.category):
                 continue
 
             content = self.normalise_html(first_post['cooked'])

@@ -38,7 +38,8 @@ discourse = Discourse(
     api_user="naggie",
     api_key=os.environ['API_KEY'],
 )
-discourse.crawl('facility automation')
+discourse.crawl()
+
 articles += discourse.articles
 
 
