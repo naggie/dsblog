@@ -31,12 +31,15 @@ env = Environment(loader=FileSystemLoader('templates'))
 from crawlers.discourse import Discourse
 print 'Discourse...'
 # TODO decide on an interface
-articles = Discourse(
+articles = list()
+
+discourse = Discourse(
     url="http://localhost:8099",
     api_user="naggie",
     api_key=os.environ['API_KEY'],
-).list_articles('blog')
-
+)
+discourse.crawl('facility automation')
+articles += discourse.articles
 
 
 class Slugger():

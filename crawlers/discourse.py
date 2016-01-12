@@ -4,8 +4,9 @@ from iso8601 import parse_date
 from tqdm import tqdm
 import re
 from bs4 import BeautifulSoup
+from .crawler import Crawler
 
-class Discourse():
+class Discourse(Crawler):
     def __init__(self,url,api_user,api_key):
         self.url = url.strip('/')
         self.api_key = api_key
@@ -29,6 +30,7 @@ class Discourse():
         response.raise_for_status()
 
         return response.json()
+
 
     def normalise_html(self,html):
         content = BeautifulSoup(html,'html.parser')
@@ -70,7 +72,7 @@ class Discourse():
         return image
 
 
-    def list_articles(self,name='Blog'):
+    def crawl(self,name='Blog'):
         # find cetegory ID
         for cat in self.get(['categories'])['category_list']['categories']:
             id = cat['id']
@@ -89,7 +91,6 @@ class Discourse():
         # load topics (containing posts: article then comments)
         #usernames = set()
             #usernames.add(t['username'])
-        articles = list()
         for id in tqdm(ids,leave=True):
             topic = self.get(['t',id])
             first_post = topic['post_stream']['posts'][0]
@@ -109,7 +110,7 @@ class Discourse():
                 })
 
 
-            articles.append({
+            self.articles.append({
                 "title":topic['title'],
                 "url": '/'.join([self.url,'t',topic['slug'],str(id)]),
                 "comments_url": '/'.join([self.url,'t',topic['slug'],str(id)]),
@@ -121,6 +122,4 @@ class Discourse():
                 "published":parse_date(first_post['created_at']),
                 "comments":comments,
             })
-
-        return articles
 
