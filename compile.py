@@ -42,7 +42,7 @@ discourse = Discourse(
     api_key=os.environ['API_KEY'],
     category="facility automation",
 )
-#discourse.crawl()
+discourse.crawl()
 articles += discourse.articles
 
 hexo = Hexo(url="http://jamesreuss.co.uk/index.xml",user_email="foo@bar.com")

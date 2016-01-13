@@ -1,8 +1,10 @@
 from bs4 import BeautifulSoup
 
-class Crawler():
-    articles = list()
-    users = dict()
+class Crawler(object):
+
+    def __init__(self):
+        self.articles = list()
+        self.users = dict()
 
     def crawl(self):
         raise NotImplementedError()

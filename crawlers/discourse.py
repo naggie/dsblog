@@ -8,6 +8,8 @@ from crawler import Crawler
 
 class Discourse(Crawler):
     def __init__(self,url,api_user,api_key,category="Blog"):
+        super(Discourse,self).__init__()
+
         self.url = url.strip('/')
         self.api_key = api_key
         self.api_user = api_user
