@@ -4,7 +4,7 @@ from iso8601 import parse_date
 from tqdm import tqdm
 import re
 from bs4 import BeautifulSoup
-from .crawler import Crawler
+from crawler import Crawler
 
 class Discourse(Crawler):
     def __init__(self,url,api_user,api_key,category="Blog"):
@@ -54,24 +54,6 @@ class Discourse(Crawler):
             div.extract()
 
         return unicode(content)
-
-
-    def find_image(self,html):
-        'look for best image URL or None, for header image'
-        content = BeautifulSoup(html,'html.parser')
-        image = None
-        for img in content.find_all('img'):
-            try:
-                if 'emoji' in img['class'] or 'avatar' in img['class']:
-                    continue
-            except KeyError:
-                pass
-
-            image = img['src']
-            break
-
-        return image
-
 
     def crawl(self):
         # find cetegory ID

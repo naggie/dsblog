@@ -31,6 +31,7 @@ env = Environment(loader=FileSystemLoader('templates'))
 
 
 from crawlers.discourse import Discourse
+from crawlers.hexo import Hexo
 print 'Discourse...'
 # TODO decide on an interface
 articles = list()
@@ -41,9 +42,14 @@ discourse = Discourse(
     api_key=os.environ['API_KEY'],
     category="facility automation",
 )
-discourse.crawl()
-
+#discourse.crawl()
 articles += discourse.articles
+
+hexo = Hexo(url="http://jamesreuss.co.uk/index.xml",user_email="foo@bar.com")
+hexo.crawl()
+
+articles += hexo.articles
+
 
 
 
