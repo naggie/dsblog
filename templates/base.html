@@ -23,6 +23,11 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+        {% for link in prefetch %}
+        <link rel="prefetch" href="{{link}}" />
+        {% endfor %}
+        <link rel="prerender" href="{{prerender}}" />
     </head>
     <!-- hack to make :active work on touch -->
     <body onmouseover="">

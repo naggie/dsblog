@@ -39,6 +39,7 @@ discourse = Discourse(
     url="http://localhost:8099",
     api_user="naggie",
     api_key=os.environ['API_KEY'],
+    category="facility automation",
 )
 discourse.crawl()
 
@@ -149,7 +150,11 @@ filter_articles(articles)
 
 template = env.get_template('blog.html')
 filepath = os.path.join(build_dir,'index.html')
-template.stream(articles=articles).dump(filepath)
+template.stream(
+        articles=articles,
+        prefetch=[articles[0]["url"]],
+        prerender=articles[0]["url"],
+).dump(filepath)
 
 template = env.get_template('article_page.html')
 for article in articles:
