@@ -4,11 +4,9 @@ from time import mktime
 from datetime import datetime
 import pytz
 
-class Hexo(Crawler):
+class Feed(Crawler):
     def __init__(self,url,user_email):
-        super(Hexo,self).__init__()
-
-        self.url = url
+        super(Feed,self).__init__(url)
         self.user_email = user_email
 
     def crawl(self):

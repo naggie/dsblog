@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup
 
 class Crawler(object):
 
-    def __init__(self):
+    def __init__(self,url):
+        self.url = url.strip('/')
         self.articles = list()
         self.users = dict()
 

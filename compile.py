@@ -8,14 +8,25 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 import requests
 from StringIO import StringIO
+import yaml
 
+from crawlers.discourse import Discourse
+from crawlers.feed import Feed
 from localiser import Localizer,Slugger
+import sys
 
 
-build_dir = 'build/'
+if len(sys.argv) != 3:
+    print "DSblog aggregator"
+    print "Usage: %s <config.yml> <build_dir/>" % sys.argv[0]
+    sys.exit()
+else:
+    build_dir = sys.argv[2]
+    with open(sys.argv[1]) as f:
+        config = yaml.load(f.read())
 
-#if os.path.exists(build_dir):
-#    raise IOError('Remove build directory first')
+
+#build_dir = 'build/'
 
 
 build_static_dir = os.path.join(build_dir,'static')
@@ -30,26 +41,22 @@ copytree('static',build_static_dir)
 env = Environment(loader=FileSystemLoader('templates'))
 
 
-from crawlers.discourse import Discourse
-from crawlers.hexo import Hexo
-print 'Discourse...'
-# TODO decide on an interface
 articles = list()
 
-discourse = Discourse(
-    url="http://localhost:8099",
-    api_user="naggie",
-    api_key=os.environ['API_KEY'],
-    category="facility automation",
-)
-discourse.crawl()
-articles += discourse.articles
+for task in config:
+    crawler_name = task["crawler"]
+    del task["crawler"]
+    if crawler_name == "Discourse":
+        crawler = Discourse(**task)
+    elif crawler_name == "Feed":
+        crawler = Feed(**task)
+    else:
+        raise NotImplementedError("%s crawler not implemented" % task.crawler)
 
-hexo = Hexo(url="http://jamesreuss.co.uk/index.xml",user_email="foo@bar.com")
-hexo.crawl()
 
-articles += hexo.articles
-
+    print crawler_name + ': %s...' % crawler.url
+    crawler.crawl()
+    articles += crawler.articles
 
 
 
