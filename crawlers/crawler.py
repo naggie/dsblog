@@ -4,8 +4,11 @@ class Crawler(object):
 
     def __init__(self,url):
         self.url = url.strip('/')
+
         self.articles = list()
-        self.users = dict()
+
+        # user profiles by username
+        self.user_profiles = dict()
 
     def crawl(self):
         raise NotImplementedError()

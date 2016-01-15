@@ -14,7 +14,7 @@ class Discourse(Crawler):
         self.api_user = api_user
         self.category = category
 
-    def get(self,path):
+    def get(self,*path):
         'get an API URL where list path is transformed into a JSON request and parsed'
 
         path = [str(p) for p in path]
@@ -58,7 +58,7 @@ class Discourse(Crawler):
 
     def crawl(self):
         # find cetegory ID
-        for cat in self.get(['categories'])['category_list']['categories']:
+        for cat in self.get('categories')['category_list']['categories']:
             id = cat['id']
             if self.category.lower() == cat['name'].lower():
                 # correct case
@@ -69,16 +69,17 @@ class Discourse(Crawler):
 
         # list topic IDs, collect usernames
         ids = list()
-        for t in self.get(['c',id])['topic_list']['topics']:
+        for t in self.get('c',id)['topic_list']['topics']:
             ids.append(t["id"])
 
 
         # load topics (containing posts: article then comments)
-        #usernames = set()
-            #usernames.add(t['username'])
+        usernames = set()
         for id in tqdm(ids,leave=True):
-            topic = self.get(['t',id])
+            topic = self.get('t',id)
             first_post = topic['post_stream']['posts'][0]
+
+            usernames.add(first_post['username'])
 
             # don't want any category definition posts
             if topic['title'].startswith('About the %s category' % self.category):
@@ -108,3 +109,14 @@ class Discourse(Crawler):
                 "comments":comments,
             })
 
+        # get user profiles (cannot list emails)
+        for username in usernames:
+            p = self.get('users',username)["user"]
+            self.user_profiles[username] = {
+                    "username" : p["username"],
+                    "name" : p["name"],
+                    "avatar":self.url+p["avatar_template"].format(size=200),
+                    "title" : p["title"],
+                    "bio" : p["bio_cooked"],
+                    "attributes" : {},
+            }
