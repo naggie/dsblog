@@ -42,6 +42,7 @@ env = Environment(loader=FileSystemLoader('templates'))
 
 
 articles = list()
+user_profiles = dict()
 
 for task in config:
     crawler_name = task["crawler"]
@@ -57,6 +58,9 @@ for task in config:
     print crawler_name + ': %s...' % crawler.url
     crawler.crawl()
     articles += crawler.articles
+
+    # TODO merge down properly
+    user_profiles.update(crawler.user_profiles)
 
 
 
@@ -167,6 +171,7 @@ template.stream(
         articles=articles,
         prefetch=[articles[0]["url"]],
         prerender=articles[0]["url"],
+        users=user_profiles,
 ).dump(filepath)
 
 template = env.get_template('article_page.html')
