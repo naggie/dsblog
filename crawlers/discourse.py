@@ -103,6 +103,7 @@ class Discourse(Crawler):
                 "image": self.find_image(content),
                 # fix internal image URLS which don't have protocol
                 "content":content,
+                "username":first_post["username"],
                 "author_image":self.url+first_post["avatar_template"].format(size=200),
                 "author_name":first_post["display_username"],
                 "published":parse_date(first_post['created_at']),
