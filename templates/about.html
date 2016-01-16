@@ -12,9 +12,12 @@
         <div class="bio"> {{profile.bio}} </div>
         <div class="links">
             {% if profile.article_count == 1 %}
-            {{ profile.article_count }} article
+            {{profile.article_count}} article
             {% elif profile.article_count %}
-            {{ profile.article_count }} articles
+            {{profile.article_count}} articles
+            {% endif %}
+            {% if profile.website %}
+            | <a href="{{profile.website}}">{{profile.website}}</a>
             {% endif %}
         </div>
     </div>

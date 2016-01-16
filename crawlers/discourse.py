@@ -116,5 +116,6 @@ class Discourse(Crawler):
                     "avatar":self.url+p["avatar_template"].format(size=200),
                     "title" : p["title"],
                     "bio" : p["bio_cooked"],
-                    "attributes" : {}, # links to twitter, linkedin, website etc
+                    "website" : p["website"],
+                    "attributes" : {}, # links to twitter, linkedin, etc
             })
