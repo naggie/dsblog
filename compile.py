@@ -80,89 +80,96 @@ def make_header_image(img):
 # * Generate post header image
 # * Make slug for url path, giving precedence to older articles
 # * TODO when user profiles are implemented, add user info
-def filter_articles(articles):
-    slugify = Slugger(['index']).slugify
-    localiser = Localizer(
-            local_dir = os.path.join(build_dir,'images'),
-            url = 'images/',
-    )
+slugify = Slugger(['index']).slugify
+localiser = Localizer(
+        local_dir = os.path.join(build_dir,'images'),
+        url = 'images/',
+)
 
-    # sort, oldest first (which has slug precedence)
-    articles.sort(key=lambda a:a['published'],reverse=False)
-    for article in articles:
-        article['url'] = slugify(article['title'])+'.html'
-        article['local'] = True
 
+for profile in user_profiles:
+    # TODO remove replacement once SSL certs are fixed
+    if profile.get("avatar"):
+        profile["avatar"] = profile["avatar"].replace('http://boards.darksky.io','http://localhost:8099')
+
+    profile['avatar'] = localiser.localise(profile['avatar'])
+
+
+# sort, oldest first (which has slug precedence)
+articles.sort(key=lambda a:a['published'],reverse=False)
+for article in articles:
+    article['url'] = slugify(article['title'])+'.html'
+    article['local'] = True
+
+    # TODO remove replacement once SSL certs are fixed
+    article["content"] = article["content"].replace('http://boards.darksky.io','http://localhost:8099')
+    if article.get("image"):
+        article["image"] = article["image"].replace('http://boards.darksky.io','http://localhost:8099')
+    if article.get("author_image"):
+        article["author_image"] = article["author_image"].replace('http://boards.darksky.io','http://localhost:8099')
+
+    article['content'] = localiser.localise_images(article['content'])
+    article['author_image'] = localiser.localise(article['author_image'])
+
+    if article.get('image'):
+        filename = slugify('header-'+article['image'])
+        filepath = os.path.join(build_dir,'images',filename)
+
+        src = article['image']
+        article['image'] = 'images/'+filename
+
+        if not os.path.exists(filepath):
+            response = requests.get(src)
+            response.raise_for_status()
+            imgdata = StringIO(response.content)
+            try:
+                img = Image.open(imgdata)
+                img = make_header_image(img)
+                img.save(filepath)
+            except IOError:
+                article['image'] = None
+                pass
+
+    excerpt = unicode()
+    content = BeautifulSoup(article['content'],'html.parser')
+    for p in content.find_all('p'):
+        for img in p.find_all('img'):
+            img.extract()
+
+        excerpt += unicode(p)
+        if len(excerpt) > 140:
+            break
+
+
+    article['excerpt'] = excerpt
+
+    for c in article['comments']:
         # TODO remove replacement once SSL certs are fixed
-        article["content"] = article["content"].replace('http://boards.darksky.io','http://localhost:8099')
-        if article.get("image"):
-            article["image"] = article["image"].replace('http://boards.darksky.io','http://localhost:8099')
-        if article.get("author_image"):
-            article["author_image"] = article["author_image"].replace('http://boards.darksky.io','http://localhost:8099')
+        c["content"] = c["content"].replace('http://boards.darksky.io','http://localhost:8099')
+        if c.get("author_image"):
+            c["author_image"] = c["author_image"].replace('http://boards.darksky.io','http://localhost:8099')
 
-        article['content'] = localiser.localise_images(article['content'])
-        article['author_image'] = localiser.localise(article['author_image'])
-
-        if article.get('image'):
-            filename = slugify('header-'+article['image'])
-            filepath = os.path.join(build_dir,'images',filename)
-
-            src = article['image']
-            article['image'] = 'images/'+filename
-
-            if not os.path.exists(filepath):
-                response = requests.get(src)
-                response.raise_for_status()
-                imgdata = StringIO(response.content)
-                try:
-                    img = Image.open(imgdata)
-                    img = make_header_image(img)
-                    img.save(filepath)
-                except IOError:
-                    article['image'] = None
-                    pass
-
-        excerpt = unicode()
-        content = BeautifulSoup(article['content'],'html.parser')
-        for p in content.find_all('p'):
-            for img in p.find_all('img'):
-                img.extract()
-
-            excerpt += unicode(p)
-            if len(excerpt) > 140:
-                break
+        c['content'] = localiser.localise_images(c["content"])
+        c['author_image'] = localiser.localise(c['author_image'])
 
 
-        article['excerpt'] = excerpt
+localiser.download()
 
-        for c in article['comments']:
-            # TODO remove replacement once SSL certs are fixed
-            c["content"] = c["content"].replace('http://boards.darksky.io','http://localhost:8099')
-            if c.get("author_image"):
-                c["author_image"] = c["author_image"].replace('http://boards.darksky.io','http://localhost:8099')
-
-            c['content'] = localiser.localise_images(c["content"])
-            c['author_image'] = localiser.localise(c['author_image'])
+print "Annotating images..."
+for article in tqdm(articles,leave=True):
+    article["content"] = localiser.annotate_images(article["content"])
 
 
-    localiser.download()
-
-    print "Annotating images..."
-    for article in tqdm(articles,leave=True):
-        article["content"] = localiser.annotate_images(article["content"])
-
-
-        if article.get("comments"):
-            for comment in article["comments"]:
-                comment["content"] = localiser.annotate_images(comment["content"])
+    if article.get("comments"):
+        for comment in article["comments"]:
+            comment["content"] = localiser.annotate_images(comment["content"])
 
 
 
 
-    # now, sort for display
-    articles.sort(key=lambda a:a['published'],reverse=True)
+# now, sort for display
+articles.sort(key=lambda a:a['published'],reverse=True)
 
-filter_articles(articles)
 
 template = env.get_template('blog.html')
 filepath = os.path.join(build_dir,'index.html')
