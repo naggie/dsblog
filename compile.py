@@ -9,7 +9,7 @@ from tqdm import tqdm
 import requests
 from StringIO import StringIO
 import yaml
-
+from collections import Counter
 from crawlers.discourse import Discourse
 from crawlers.feed import Feed
 from localiser import Localizer,Slugger
@@ -185,6 +185,16 @@ for article in tqdm(articles,leave=True):
 # now, sort for display
 articles.sort(key=lambda a:a['published'],reverse=True)
 
+
+# add post count to user profiles then sort
+article_count = Counter()
+for article in articles:
+    article_count[article["username"]] +=1
+
+for profile in user_profiles:
+    profile["article_count"] = article_count[profile["username"]]
+
+user_profiles.sort(key=lambda p:p['article_count'],reverse=True)
 
 template = env.get_template('blog.html')
 filepath = os.path.join(build_dir,'index.html')

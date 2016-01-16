@@ -5,11 +5,18 @@
 {% for profile in profiles %}
 <div class="profiles">
     <div class="profile">
-        <h2>{{profile.name}}</h2>
+        <h3>{{profile.name}}</h3>
         {% if profile.avatar %}
         <img class="avatar" src="{{profile.avatar}}" alt="{{profile.name}}" width="200" height="200" />
         {% endif %}
-        {{profile.bio}}
+        <div class="bio"> {{profile.bio}} </div>
+        <div class="links">
+            {% if profile.article_count == 1 %}
+            {{ profile.article_count }} article
+            {% elif profile.article_count %}
+            {{ profile.article_count }} articles
+            {% endif %}
+        </div>
     </div>
 </div>
 {% else %}

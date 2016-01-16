@@ -107,26 +107,6 @@ article section a:visited
     color:#444;
 }
 
-
-
-@media only screen and (max-width: 720px) {
-    #content {
-        width:100%;
-    }
-
-    .post-image {
-        position:relative;
-        width:710px;
-        left:50%;
-        margin-left:-355px!important;
-    }
-
-    section img {
-        max-width:100%;
-        height:inherit;
-    }
-}
-
 .emoji {
     width:32px;
     height:32px;
@@ -160,7 +140,28 @@ hr {
 }
 
 .profiles .profile {
+    font-family: 'Raleway','Sans-serif';
     padding-bottom:30px;
     margin-bottom:50px;
     border-bottom:1px solid #eee;
 }
+
+
+@media only screen and (max-width: 720px) {
+    #content {
+        width:100%;
+    }
+
+    .post-image {
+        position:relative;
+        width:710px;
+        left:50%;
+        margin-left:-355px!important;
+    }
+
+    section img {
+        max-width:100%;
+        height:inherit;
+    }
+}
+
