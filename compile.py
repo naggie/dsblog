@@ -1,5 +1,6 @@
 from __future__ import division
 from jinja2 import Environment, FileSystemLoader
+from urlparse import urlparse
 import os
 import re
 from shutil import copytree,rmtree
@@ -39,6 +40,8 @@ copytree('static',build_static_dir)
 
 
 env = Environment(loader=FileSystemLoader('templates'))
+env.filters["domain"] = lambda url: urlparse(url).netloc
+
 
 
 articles = list()
@@ -98,6 +101,7 @@ for profile in user_profiles:
 # sort, oldest first (which has slug precedence)
 articles.sort(key=lambda a:a['published'],reverse=False)
 for article in articles:
+    article['origin'] = article["url"]
     if article["content"]:
         article['url'] = slugify(article['title'])+'.html'
 
