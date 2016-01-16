@@ -6,9 +6,7 @@ class Crawler(object):
         self.url = url.strip('/')
 
         self.articles = list()
-
-        # user profiles by username
-        self.user_profiles = dict()
+        self.user_profiles = list()
 
     def crawl(self):
         raise NotImplementedError()

@@ -42,7 +42,7 @@ env = Environment(loader=FileSystemLoader('templates'))
 
 
 articles = list()
-user_profiles = dict()
+user_profiles = list()
 
 for task in config:
     crawler_name = task["crawler"]
@@ -60,8 +60,7 @@ for task in config:
     articles += crawler.articles
 
     # TODO merge down properly
-    user_profiles.update(crawler.user_profiles)
-
+    user_profiles += crawler.user_profiles
 
 
 def make_header_image(img):
@@ -171,7 +170,6 @@ template.stream(
         articles=articles,
         prefetch=[articles[0]["url"]],
         prerender=articles[0]["url"],
-        users=user_profiles,
 ).dump(filepath)
 
 template = env.get_template('article_page.html')
@@ -179,3 +177,10 @@ for article in articles:
     if article['local']:
         filepath = os.path.join(build_dir,article['url'])
         template.stream(article=article).dump(filepath)
+
+
+template = env.get_template('about.html')
+filepath = os.path.join(build_dir,'about.html')
+template.stream(
+        profiles=user_profiles,
+).dump(filepath)

@@ -113,11 +113,11 @@ class Discourse(Crawler):
         # get user profiles (cannot list emails)
         for username in usernames:
             p = self.get('users',username)["user"]
-            self.user_profiles[username] = {
+            self.user_profiles.append({
                     "username" : p["username"],
                     "name" : p["name"],
                     "avatar":self.url+p["avatar_template"].format(size=200),
                     "title" : p["title"],
                     "bio" : p["bio_cooked"],
                     "attributes" : {},
-            }
+            })
