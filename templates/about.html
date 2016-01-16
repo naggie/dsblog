@@ -15,6 +15,8 @@
             {{profile.article_count}} article
             {% elif profile.article_count %}
             {{profile.article_count}} articles
+            {% else %}
+            No articles
             {% endif %}
             {% if profile.website %}
             | <a href="{{profile.website}}">{{profile.website}}</a>
