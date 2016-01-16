@@ -7,12 +7,14 @@ from bs4 import BeautifulSoup
 from crawler import Crawler
 
 class Discourse(Crawler):
-    def __init__(self,url,api_user,api_key,category="Blog"):
+    def __init__(self,url,api_user,api_key,category="Blog",extra_usernames=[]):
         super(Discourse,self).__init__(url)
 
         self.api_key = api_key
         self.api_user = api_user
         self.category = category
+
+        self.usernames = set(extra_usernames)
 
     def get(self,*path):
         'get an API URL where list path is transformed into a JSON request and parsed'
@@ -74,12 +76,11 @@ class Discourse(Crawler):
 
 
         # load topics (containing posts: article then comments)
-        usernames = set()
         for id in tqdm(ids,leave=True):
             topic = self.get('t',id)
             first_post = topic['post_stream']['posts'][0]
 
-            usernames.add(first_post['username'])
+            self.usernames.add(first_post['username'])
 
             # don't want any category definition posts
             if topic['title'].startswith('About the %s category' % self.category):
@@ -108,7 +109,7 @@ class Discourse(Crawler):
             })
 
         # get user profiles (cannot list emails)
-        for username in usernames:
+        for username in self.usernames:
             p = self.get('users',username)["user"]
             self.user_profiles.append({
                     "username" : p["username"],
