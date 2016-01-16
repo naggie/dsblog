@@ -26,3 +26,16 @@ class Crawler(object):
             break
 
         return image
+
+    def generate_excerpt(self,content):
+        excerpt = unicode()
+        content = BeautifulSoup(content,'html.parser')
+        for p in content.find_all('p'):
+            for img in p.find_all('img'):
+                img.extract()
+
+            excerpt += unicode(p)
+            if len(excerpt) > 140:
+                break
+
+        return excerpt

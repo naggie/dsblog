@@ -102,11 +102,13 @@ for article in articles:
     article['local'] = True
 
     # TODO remove replacement once SSL certs are fixed
-    article["content"] = article["content"].replace('http://boards.darksky.io','http://localhost:8099')
+    if article.get("content"):
+        article["content"] = article["content"].replace('http://boards.darksky.io','http://localhost:8099')
+        article['content'] = localiser.localise_images(article['content'])
+
     if article.get("image"):
         article["image"] = article["image"].replace('http://boards.darksky.io','http://localhost:8099')
 
-    article['content'] = localiser.localise_images(article['content'])
 
     if article.get('image'):
         filename = slugify('header-'+article['image'])
@@ -128,17 +130,6 @@ for article in articles:
                 article['image'] = None
                 pass
 
-    excerpt = unicode()
-    content = BeautifulSoup(article['content'],'html.parser')
-    for p in content.find_all('p'):
-        for img in p.find_all('img'):
-            img.extract()
-
-        excerpt += unicode(p)
-        if len(excerpt) > 140:
-            break
-
-
     # get user
     for profile in user_profiles:
         if article["username"] == profile["username"]:
@@ -149,7 +140,6 @@ for article in articles:
         article["author_name"] = "Anonymous"
 
 
-    article['excerpt'] = excerpt
 
     for c in article['comments']:
         # TODO remove replacement once SSL certs are fixed
@@ -173,7 +163,8 @@ localiser.download()
 
 print "Annotating images..."
 for article in tqdm(articles,leave=True):
-    article["content"] = localiser.annotate_images(article["content"])
+    if article.get('content'):
+        article["content"] = localiser.annotate_images(article["content"])
 
 
     if article.get("comments"):
