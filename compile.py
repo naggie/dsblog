@@ -98,8 +98,8 @@ for profile in user_profiles:
 # sort, oldest first (which has slug precedence)
 articles.sort(key=lambda a:a['published'],reverse=False)
 for article in articles:
-    article['url'] = slugify(article['title'])+'.html'
-    article['local'] = True
+    if article["content"]:
+        article['url'] = slugify(article['title'])+'.html'
 
     # TODO remove replacement once SSL certs are fixed
     if article.get("content"):
@@ -172,8 +172,6 @@ for article in tqdm(articles,leave=True):
             comment["content"] = localiser.annotate_images(comment["content"])
 
 
-
-
 # now, sort for display
 articles.sort(key=lambda a:a['published'],reverse=True)
 
@@ -198,7 +196,7 @@ template.stream(
 
 template = env.get_template('article_page.html')
 for article in articles:
-    if article['local']:
+    if article['content']:
         filepath = os.path.join(build_dir,article['url'])
         template.stream(article=article).dump(filepath)
 
