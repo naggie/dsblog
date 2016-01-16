@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <!-- Want to join us? Email root at this domain -->
+{% set nav_links = [
+    ('Blog','/'),
+    ('About','/about.html'),
+    ('Forum','https://boards.darksky.io/'),
+] -%}
+
 <html>
     <head>
         <title>{% block title %}Darksky blog{% endblock %}</title>
@@ -39,10 +45,9 @@
                 <img height="200" src="static/darksky-light-bg.svg" />
             </a>
             <br />
-            <a class="selected" href="/">Blog</a>
-            <a href="about.html">About</a>
-            <a href="https://boards.darksky.io/">Forum</a>
-            <!-- <a href="/welcome/">VPN</a> --> <!-- VPN? What VPN? -->
+            {% for name,url in nav_links %}
+            <a{% if name == selected_link %} class="selected"{% endif%} href="{{url}}">{{name}}</a>
+            {% endfor %}
             {% endblock nav %}
         </nav>
         <div id="content">
