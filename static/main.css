@@ -154,3 +154,13 @@ hr {
     height: 0;
     border-top:1px dashed #eee;
 }
+
+.profiles {
+    text-align:center;
+}
+
+.profiles .profile {
+    padding-bottom:30px;
+    margin-bottom:50px;
+    border-bottom:1px solid #eee;
+}

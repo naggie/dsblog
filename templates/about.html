@@ -3,10 +3,15 @@
 
 {% block content %}
 {% for profile in profiles %}
-    {{profile.name}}
-    {% if profile.avatar %}
-    <img class="" src="{{profile.avatar}}" alt="{{profile.name}}" />
-    {% endif %}
+<div class="profiles">
+    <div class="profile">
+        <h2>{{profile.name}}</h2>
+        {% if profile.avatar %}
+        <img class="avatar" src="{{profile.avatar}}" alt="{{profile.name}}" width="200" height="200" />
+        {% endif %}
+        {{profile.bio}}
+    </div>
+</div>
 {% else %}
     <p><em>No users have published yet.</em></p>
 {% endfor %}
