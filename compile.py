@@ -105,11 +105,8 @@ for article in articles:
     article["content"] = article["content"].replace('http://boards.darksky.io','http://localhost:8099')
     if article.get("image"):
         article["image"] = article["image"].replace('http://boards.darksky.io','http://localhost:8099')
-    if article.get("author_image"):
-        article["author_image"] = article["author_image"].replace('http://boards.darksky.io','http://localhost:8099')
 
     article['content'] = localiser.localise_images(article['content'])
-    article['author_image'] = localiser.localise(article['author_image'])
 
     if article.get('image'):
         filename = slugify('header-'+article['image'])
@@ -141,6 +138,16 @@ for article in articles:
             break
 
 
+    # get user
+    for profile in user_profiles:
+        if article["username"] == profile["username"]:
+            article['author_name'] = profile["name"]
+            article['author_image'] = profile["avatar"]
+            break
+    else:
+        article["author_name"] = "Anonymous"
+
+
     article['excerpt'] = excerpt
 
     for c in article['comments']:
@@ -150,7 +157,15 @@ for article in articles:
             c["author_image"] = c["author_image"].replace('http://boards.darksky.io','http://localhost:8099')
 
         c['content'] = localiser.localise_images(c["content"])
-        c['author_image'] = localiser.localise(c['author_image'])
+
+        # get user
+        for profile in user_profiles:
+            if c["username"] == profile["username"]:
+                c['author_name'] = profile["name"]
+                c['author_image'] = profile["avatar"]
+                break
+        else:
+            c["author_name"] = "Anonymous"
 
 
 localiser.download()

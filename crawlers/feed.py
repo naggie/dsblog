@@ -5,9 +5,9 @@ from datetime import datetime
 import pytz
 
 class Feed(Crawler):
-    def __init__(self,url,user_email):
+    def __init__(self,url,username):
         super(Feed,self).__init__(url)
-        self.user_email = user_email
+        self.username = username
 
     def crawl(self):
         d = feedparser.parse(self.url)
@@ -16,12 +16,11 @@ class Feed(Crawler):
             self.articles.append({
                 "title":entry['title'],
                 "url": entry["link"],
+                "content":entry["summary"],
+                "username":self.username,
                 "comments_url": entry['link'],
                 "image": self.find_image(entry["summary"]),
                 # fix internal image URLS which don't have protocol
-                "content":entry["summary"],
-                "author_image":"",
-                "author_name":"",
                 "published": pytz.utc.localize(datetime.fromtimestamp(mktime(entry["published_parsed"]))),
                 "comments":[],
             })

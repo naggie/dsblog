@@ -91,8 +91,7 @@ class Discourse(Crawler):
             for post in topic['post_stream']['posts'][1:]:
                 comments.append({
                     "content": self.normalise_html(post['cooked']),
-                    "author_name": post['display_username'],
-                    "author_image": self.url+post["avatar_template"].format(size=200),
+                    "username": post['username'],
                 })
 
 
@@ -104,8 +103,6 @@ class Discourse(Crawler):
                 # fix internal image URLS which don't have protocol
                 "content":content,
                 "username":first_post["username"],
-                "author_image":self.url+first_post["avatar_template"].format(size=200),
-                "author_name":first_post["display_username"],
                 "published":parse_date(first_post['created_at']),
                 "comments":comments,
             })
@@ -119,5 +116,5 @@ class Discourse(Crawler):
                     "avatar":self.url+p["avatar_template"].format(size=200),
                     "title" : p["title"],
                     "bio" : p["bio_cooked"],
-                    "attributes" : {},
+                    "attributes" : {}, # links to twitter, linkedin, website etc
             })
