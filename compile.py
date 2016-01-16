@@ -116,7 +116,8 @@ for article in articles:
         article['image'] = 'images/'+filename
 
         if not os.path.exists(filepath):
-            response = requests.get(src)
+            # TODO re-enable verification once SSL certs are fixed
+            response = requests.get(src,verify=False)
             response.raise_for_status()
             imgdata = StringIO(response.content)
             try:
