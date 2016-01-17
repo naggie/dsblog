@@ -2,7 +2,11 @@
 {% set selected_link = "About" -%}
 
 {% block content %}
-<p class="about">Darksky is an invite-only Research and Development community founded in 2010</p>
+<div class="about">
+    <p>Darksky is an invite-only Research and Development community founded in 2010</p>
+    <p>Blog articles are taken from a category on the Darksky forum as well as the RSS feed from personal websites.</p>
+</div>
+<h2>Public Members</h2>
 <div class="profiles">
     {% for profile in profiles %}
         <div class="profile">
