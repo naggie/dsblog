@@ -2,10 +2,10 @@
 {% set selected_link = "About" -%}
 
 {% block content %}
-Darksky is an invite-only Research and Development community.
-{% for profile in profiles %}
 <div class="profiles">
-    <div class="profile">
+    <p>Darksky is an invite-only Research and Development community.</p>
+    {% for profile in profiles %}
+        <div class="profile">
         <h3>{{profile.name}}</h3>
         {% if profile.avatar %}
         <img class="avatar" src="{{profile.avatar}}" alt="{{profile.name}}" width="200" height="200" />
@@ -27,9 +27,9 @@ Darksky is an invite-only Research and Development community.
             {% endif %}
         </div>
     </div>
+    {% else %}
+        <p><em>No users have published yet.</em></p>
+    {% endfor %}
 </div>
-{% else %}
-    <p><em>No users have published yet.</em></p>
-{% endfor %}
 
 {% endblock content %}
