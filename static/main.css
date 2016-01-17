@@ -4,7 +4,7 @@ body {
     background-position:center 40px;
     background-repeat:no-repeat;
     text-rendering: geometricPrecision;
-    font-family: "Merriweather", serif;
+    font-family: 'Raleway','Sans-serif';
     font-size:18px;
 }
 
@@ -15,7 +15,6 @@ a,a:visited
 
 h1, h2, h3, nav, a.author-name
 {
-    font-family: 'Raleway','Sans-serif';
     color:#444;
     letter-spacing:1px;
 }
@@ -94,6 +93,8 @@ article > section {
     word-wrap: break-word;
     font-size: 1.0em;
     line-height: 1.7em;
+    font-family: "Merriweather", serif;
+    color:#333;
 }
 
 
@@ -140,12 +141,16 @@ hr {
 }
 
 .profiles .profile {
-    font-family: 'Raleway','Sans-serif';
     padding-bottom:30px;
     margin-bottom:50px;
     border-bottom:1px solid #eee;
 }
 
+
+.about {
+    text-align:center;
+    margin:50px 0 80px 0;
+}
 
 @media only screen and (max-width: 720px) {
     #content {
@@ -164,4 +169,3 @@ hr {
         height:inherit;
     }
 }
-
