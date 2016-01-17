@@ -2,6 +2,7 @@
 {% set selected_link = "About" -%}
 
 {% block content %}
+Darksky is an invite-only Research and Development community.
 {% for profile in profiles %}
 <div class="profiles">
     <div class="profile">
@@ -20,6 +21,9 @@
             {% endif %}
             {% if profile.website %}
             | <a href="{{profile.website}}">{{profile.website}}</a>
+            {% endif %}
+            {% if profile.invited_by %}
+            | <em>invited by {{profile.invited_by}}</em>
             {% endif %}
         </div>
     </div>

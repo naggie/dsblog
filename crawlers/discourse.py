@@ -119,5 +119,6 @@ class Discourse(Crawler):
                     "title" : p["title"],
                     "bio" : p["bio_cooked"],
                     "website" : p["website"],
+                    "invited_by" : p["invited_by"]["username"] if p.get("invited_by") else None,
                     "attributes" : {}, # links to twitter, linkedin, etc
             })
