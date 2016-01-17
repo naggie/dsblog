@@ -103,10 +103,6 @@ for article in articles:
     if article.get("content"):
         article['content'] = localiser.localise_images(article['content'])
 
-    if article.get("image"):
-        article["image"] = article["image"].replace('http://boards.darksky.io','http://localhost:8099')
-
-
     if article.get('image'):
         filename = slugify('header-'+article['image'])
         filepath = os.path.join(build_dir,'images',filename)
