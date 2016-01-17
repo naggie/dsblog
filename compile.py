@@ -82,7 +82,6 @@ def make_header_image(img):
 # * Localise images in HTML
 # * Generate post header image
 # * Make slug for url path, giving precedence to older articles
-# * TODO when user profiles are implemented, add user info
 slugify = Slugger(['index']).slugify
 localiser = Localizer(
         local_dir = os.path.join(build_dir,'images'),
@@ -91,10 +90,6 @@ localiser = Localizer(
 
 
 for profile in user_profiles:
-    # TODO remove replacement once SSL certs are fixed
-    if profile.get("avatar"):
-        profile["avatar"] = profile["avatar"].replace('http://boards.darksky.io','http://localhost:8099')
-
     profile['avatar'] = localiser.localise(profile['avatar'])
 
 
@@ -105,9 +100,7 @@ for article in articles:
     if article["content"]:
         article['url'] = slugify(article['title'])+'.html'
 
-    # TODO remove replacement once SSL certs are fixed
     if article.get("content"):
-        article["content"] = article["content"].replace('http://boards.darksky.io','http://localhost:8099')
         article['content'] = localiser.localise_images(article['content'])
 
     if article.get("image"):
@@ -122,7 +115,6 @@ for article in articles:
         article['image'] = 'images/'+filename
 
         if not os.path.exists(filepath):
-            # TODO re-enable verification once SSL certs are fixed
             response = requests.get(src,verify=False)
             response.raise_for_status()
             imgdata = StringIO(response.content)
@@ -146,11 +138,6 @@ for article in articles:
 
 
     for c in article['comments']:
-        # TODO remove replacement once SSL certs are fixed
-        c["content"] = c["content"].replace('http://boards.darksky.io','http://localhost:8099')
-        if c.get("author_image"):
-            c["author_image"] = c["author_image"].replace('http://boards.darksky.io','http://localhost:8099')
-
         c['content'] = localiser.localise_images(c["content"])
 
         # get user
