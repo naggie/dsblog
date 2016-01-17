@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <!-- Want to join us? Email root at this domain -->
 {% set nav_links = [
-    ('Blog','/'),
-    ('About','/about.html'),
+    ('Blog','.'),
+    ('About','about.html'),
     ('Forum','https://boards.darksky.io/'),
 ] -%}
 
@@ -35,13 +35,14 @@
         {% for link in prefetch %}
         <link rel="prefetch" href="{{link}}" />
         {% endfor %}
+        <link rel="prefetch" href="about.html" />
         <link rel="prerender" href="{{prerender}}" />
     </head>
     <!-- hack to make :active work on touch -->
     <body onmouseover="">
         <nav>
             {% block nav %}
-            <a href="/">
+            <a href=".">
                 <img height="200" src="static/darksky-light-bg.svg" />
             </a>
             <br />
