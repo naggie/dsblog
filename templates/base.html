@@ -6,10 +6,12 @@
     ('Forum','https://boards.darksky.io/'),
 ] -%}
 
+{% set about_text = "Darksky is an invite-only Electronics and software R&amp;D community founded in 2010" %}
+
 <html>
     <head>
         <title>{% block title %}Darksky blog{% endblock %}</title>
-         <meta name="description" content="Darksky blog aggregator -- articles from members of Darksky.">
+        <meta name="description" content="{{about_text}}">
 
         <style>
             /* Load font faster by not depending on main CSS first */
