@@ -1,0 +1,14 @@
+- crawler: Discourse
+  #  url: "http://localhost:8099"
+  url: "https://try.discourse.org"
+  api_user: username
+  api_key: 0000000000000000000000000000000000000000000000000000000000000000
+  category: "blog"
+  # TODO replace extra usernames system with separated article + user profile crawl stage
+  # so that discourse can grab users mentioned in other sources, maybe.
+  extra_usernames: ["john"]
+
+- crawler: Feed
+  url: "http://www.feedforall.com/sample.xml"
+  username: john
+  full_articles: true
