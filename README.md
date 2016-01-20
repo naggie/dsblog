@@ -11,6 +11,6 @@ To run:
     virtualenv .
     source bin/activate
     pip install -r requirements.txt
-    ./compile.py config.example.yml build/
+    python ./dsblog/dsblog.py config.example.yml build/
 
 You'll find the website in build.

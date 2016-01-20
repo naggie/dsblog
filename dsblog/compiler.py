@@ -1,3 +1,4 @@
+#/usr/bin/env python
 from __future__ import division
 from jinja2 import Environment, FileSystemLoader
 from urlparse import urlparse
