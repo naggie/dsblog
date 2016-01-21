@@ -37,10 +37,10 @@ def main():
     if os.path.exists(build_static_dir):
         rmtree(build_static_dir)
 
-    copytree('static',build_static_dir)
+    copytree(os.path.join(script_dir,'static'),build_static_dir)
 
 
-    env = Environment(loader=FileSystemLoader('templates'))
+    env = Environment(loader=FileSystemLoader(os.path.join(script_dir,'templates')))
     env.filters["domain"] = lambda url: urlparse(url).netloc
 
 
