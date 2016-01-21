@@ -21,7 +21,12 @@ setup(
     version = "0.1",
     packages = find_packages(),
     dependency_links=links,
-    scripts = ['dsblog/dsblog.py'],
+    #scripts = ['dsblog/dsblog.py'],
+    entry_points = {
+        'console_scripts': [
+            'dsblog = dsblog.compiler:main',
+            ],
+        },
     install_requires = packages,
     package_data = {'':['*.*']},
     author = "Callan Bryant",
