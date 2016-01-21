@@ -56,7 +56,7 @@ class Discourse(Crawler):
         for div in content.find_all('div',class_="meta"):
             div.extract()
 
-        return unicode(content)
+        return content.prettify(formatter="html")
 
     def crawl(self):
         # find cetegory ID

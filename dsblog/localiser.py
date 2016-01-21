@@ -76,7 +76,7 @@ class Localizer():
         for img in content.find_all('img'):
             img['src'] = self.localise(img["src"])
 
-        return unicode(content)
+        return content.prettify(formatter="html")
 
 
     def download(self):
@@ -126,6 +126,6 @@ class Localizer():
                 img['width'] = int(image.width*factor)
                 img['height'] = int(image.height*factor)
 
-        return unicode(soup)
+        return soup.prettify(formatter="html")
 
 

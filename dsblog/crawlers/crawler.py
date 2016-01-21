@@ -34,7 +34,7 @@ class Crawler(object):
             for img in p.find_all('img'):
                 img.extract()
 
-            excerpt += unicode(p)
+            excerpt += p.prettify(formatter="html")
             if len(excerpt) > 140:
                 break
 
