@@ -18,6 +18,16 @@ from localiser import Localizer,Slugger
 import sys
 import json
 
+def make_header_image(img):
+    img = img.resize((710,int(img.height*710/img.width)),Image.ANTIALIAS)
+    img = img.crop((
+        0,
+        int(img.height/2)-50,
+        710,
+        int(img.height/2)+50,
+    ))
+    return img
+
 def main():
     if len(sys.argv) != 3:
         print "DSblog aggregator"
@@ -27,9 +37,6 @@ def main():
         build_dir = sys.argv[2]
         with open(sys.argv[1]) as f:
             config = yaml.load(f.read())
-
-
-    #build_dir = 'build/'
 
 
     build_static_dir = os.path.join(build_dir,'static')
@@ -43,7 +50,6 @@ def main():
 
     env = Environment(loader=FileSystemLoader(os.path.join(script_dir,'templates')))
     env.filters["domain"] = lambda url: urlparse(url).netloc
-
 
 
     articles = list()
@@ -68,15 +74,34 @@ def main():
         user_profiles += crawler.user_profiles
 
 
-    def make_header_image(img):
-        img = img.resize((710,int(img.height*710/img.width)),Image.ANTIALIAS)
-        img = img.crop((
-            0,
-            int(img.height/2)-50,
-            710,
-            int(img.height/2)+50,
+
+    # merge with previous archive (some posts may have changed or may have
+    # dissappeared entirely)
+    # Articles may vanish if the RSS (or whatever) feed only displays the last
+    # 15 or so items. Users, which are valuable for attribution, may be banned
+    # or have their account deleted. The posts should not vanish implicitly
+    # because of this, it should be a manual process.
+
+
+    # archive again
+    # TODO should probably be pre-filter
+    with open(os.path.join(build_dir,'articles.json'),'w') as f:
+        f.write(json.dumps(
+            articles,
+            sort_keys=True,
+            indent=4,
+            separators=(',', ': '),
+            default=lambda d: d.isoformat(),
         ))
-        return img
+
+    with open(os.path.join(build_dir,'user_profiles.json'),'w') as f:
+        f.write(json.dumps(
+            user_profiles,
+            sort_keys=True,
+            indent=4,
+            separators=(',', ': '),
+            default=lambda d: d.isoformat(),
+        ))
 
 
 
@@ -175,34 +200,6 @@ def main():
 
     user_profiles.sort(key=lambda p:p['article_count'],reverse=True)
 
-
-    # merge with previous archive (some posts may have changed or may have
-    # dissappeared entirely)
-    # Articles may vanish if the RSS (or whatever) feed only displays the last
-    # 15 or so items. Users, which are valuable for attribution, may be banned
-    # or have their account deleted. The posts should not vanish implicitly
-    # because of this, it should be a manual process.
-
-
-    # archive again
-    # TODO should probably be pre-filter
-    with open(os.path.join(build_dir,'articles.json'),'w') as f:
-        f.write(json.dumps(
-            articles,
-            sort_keys=True,
-            indent=4,
-            separators=(',', ': '),
-            default=lambda d: d.isoformat(),
-        ))
-
-    with open(os.path.join(build_dir,'user_profiles.json'),'w') as f:
-        f.write(json.dumps(
-            user_profiles,
-            sort_keys=True,
-            indent=4,
-            separators=(',', ': '),
-            default=lambda d: d.isoformat(),
-        ))
 
 
     template = env.get_template('blog.html')
