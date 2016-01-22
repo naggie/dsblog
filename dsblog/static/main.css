@@ -81,9 +81,7 @@ article .post-image {
 article footer a {
     text-decoration:none;
     color:#444;
-    vertical-align:middle; /* does not work, TODO remove following hack */
-    position:relative;
-    top:-2px;
+    vertical-align:middle;
 }
 
 article span {
