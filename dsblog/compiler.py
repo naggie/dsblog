@@ -16,6 +16,7 @@ from crawlers.discourse import Discourse
 from crawlers.feed import Feed
 from localiser import Localizer,Slugger
 import sys
+import json
 
 def main():
     if len(sys.argv) != 3:
@@ -173,6 +174,36 @@ def main():
         profile["article_count"] = article_count[profile["username"]]
 
     user_profiles.sort(key=lambda p:p['article_count'],reverse=True)
+
+
+    # merge with previous archive (some posts may have changed or may have
+    # dissappeared entirely)
+    # Articles may vanish if the RSS (or whatever) feed only displays the last
+    # 15 or so items. Users, which are valuable for attribution, may be banned
+    # or have their account deleted. The posts should not vanish implicitly
+    # because of this, it should be a manual process.
+
+
+    # archive again
+    # TODO should probably be pre-filter
+    with open(os.path.join(build_dir,'articles.json'),'w') as f:
+        f.write(json.dumps(
+            articles,
+            sort_keys=True,
+            indent=4,
+            separators=(',', ': '),
+            default=lambda d: d.isoformat(),
+        ))
+
+    with open(os.path.join(build_dir,'user_profiles.json'),'w') as f:
+        f.write(json.dumps(
+            user_profiles,
+            sort_keys=True,
+            indent=4,
+            separators=(',', ': '),
+            default=lambda d: d.isoformat(),
+        ))
+
 
     template = env.get_template('blog.html')
     filepath = os.path.join(build_dir,'index.html')
