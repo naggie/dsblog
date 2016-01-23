@@ -2,6 +2,7 @@
 from __future__ import division
 from jinja2 import Environment, FileSystemLoader
 from urlparse import urlparse
+from iso8601 import parse_date
 import os
 import re
 from shutil import copytree,rmtree
@@ -76,16 +77,28 @@ def main():
 
 
     # merge with previous archive (some posts may have changed or may have
-    # dissappeared entirely)
+    # vanished entirely)
     # Articles may vanish if the RSS (or whatever) feed only displays the last
     # 15 or so items. Users, which are valuable for attribution, may be banned
     # or have their account deleted. The posts should not vanish implicitly
     # because of this, it should be a manual process.
+    articles_json_filepath = os.path.join(build_dir,'articles.json')
+    user_profiles_json_filepath = os.path.join(build_dir,'user_profiles.json')
+    # load previous articles
+    if os.path.exists(articles_json_filepath):
+        with open(articles_json_filepath) as f:
+            for old in json.loads(f.read()):
+                old["published"] = parse_date(old["published"])
+                for new in articles:
+                    if old["url"] == new["url"]:
+                        break
+                else:
+                    articles.append(old)
 
 
     # archive again
     # TODO should probably be pre-filter
-    with open(os.path.join(build_dir,'articles.json'),'w') as f:
+    with open(articles_json_filepath,'w') as f:
         f.write(json.dumps(
             articles,
             sort_keys=True,
@@ -94,7 +107,7 @@ def main():
             default=lambda d: d.isoformat(),
         ))
 
-    with open(os.path.join(build_dir,'user_profiles.json'),'w') as f:
+    with open(user_profiles_json_filepath,'w') as f:
         f.write(json.dumps(
             user_profiles,
             sort_keys=True,
