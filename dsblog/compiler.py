@@ -95,6 +95,15 @@ def main():
                 else:
                     articles.append(old)
 
+    # load previous missing user_profiles
+    if os.path.exists(user_profiles_json_filepath):
+        with open(user_profiles_json_filepath) as f:
+            for old in json.loads(f.read()):
+                for new in user_profiles:
+                    if old["username"] == new["username"]:
+                        break
+                else:
+                    user_profiles.append(old)
 
     # archive again
     # TODO should probably be pre-filter
