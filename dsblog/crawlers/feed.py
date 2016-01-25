@@ -28,7 +28,7 @@ class Feed(Crawler):
                 "excerpt": self.generate_excerpt(content),
                 "username":self.username,
                 "comments_url": entry['link'],
-                "image": self.find_image(entry["summary"]),
+                "image": self.find_image(content),
                 # fix internal image URLS which don't have protocol
                 "published": pytz.utc.localize(datetime.fromtimestamp(mktime(entry["published_parsed"]))),
                 "comments":[],
