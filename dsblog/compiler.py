@@ -160,7 +160,7 @@ def main():
             article['image'] = 'images/'+filename
 
             if not os.path.exists(filepath):
-                response = requests.get(src,verify=False)
+                response = requests.get(src)
                 response.raise_for_status()
                 imgdata = StringIO(response.content)
                 try:
