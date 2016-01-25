@@ -135,14 +135,12 @@ hr {
     border-top:1px dashed #eee;
 }
 
-.profiles {
-    text-align:center;
-}
-
 .profiles .profile {
     padding-bottom:30px;
     margin-bottom:50px;
-    border-bottom:1px solid #eee;
+    display:inline-block;
+    width:49%;
+    vertical-align:top;
 }
 
 
@@ -165,5 +163,13 @@ hr {
     section img {
         max-width:100%;
         height:inherit;
+    }
+
+    .profiles .profile {
+        padding-bottom:30px;
+        margin-bottom:50px;
+        display:inline-block;
+        width:100%;
+        vertical-align:top;
     }
 }
