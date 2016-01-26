@@ -27,7 +27,7 @@ class Feed(Crawler):
                 # still run through excerpt generator to remove images if they exist
                 "excerpt": self.generate_excerpt(content),
                 "username":self.username,
-                "comments_url": entry['link'],
+                "comments_url": None,# entry['link'],
                 "image": self.find_image(content),
                 # fix internal image URLS which don't have protocol
                 "published": pytz.utc.localize(datetime.fromtimestamp(mktime(entry["published_parsed"]))),
