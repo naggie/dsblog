@@ -176,6 +176,7 @@ def main():
             if article["username"] == profile["username"]:
                 article['author_name'] = profile["name"]
                 article['author_image'] = profile["avatar"]
+                article['author_url'] = profile["website"]
                 break
         else:
             article["author_name"] = "Anonymous"
@@ -190,6 +191,7 @@ def main():
                 if c["username"] == profile["username"]:
                     c['author_name'] = profile["name"]
                     c['author_image'] = profile["avatar"]
+                    c['author_url'] = profile["website"]
                     break
             else:
                 c["author_name"] = "Anonymous"
