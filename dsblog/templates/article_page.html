@@ -1,6 +1,7 @@
 {% extends "base.html" %}
-{% block title %}{{article.title}} - {{ super() }}{% endblock %}
 
+{% set selected_link = article.title + ' ' + site_name -%}
+ 
 {% block nav %}
 {{ super() }}
 <br />
