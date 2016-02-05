@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% set title = article.title + ' - Darksky blog' -%}
+{% set description = article.excerpt -%}
+{% set image_url = article.image -%}
 
-{% set selected_link = article.title + ' ' + site_name -%}
- 
 {% block nav %}
 {{ super() }}
 <br />

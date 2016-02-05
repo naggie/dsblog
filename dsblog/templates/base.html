@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <!-- Want to join us? Email root at this domain -->
+{# http://jinja.pocoo.org/docs/dev/tricks/ -#}
 {% set nav_links = [
     ('Blog','.'),
     ('About','about.html'),
@@ -7,26 +8,23 @@
 ] -%}
 
 
-{% set base_url = "https://darksky.io/" %}
-{% set logo_url = "/static/darksky-light-bg.svg" %}
-
-{# Override per article #}
-{% set site_name = "Darksky blog" %}
-{% set title = site_name %}
-{% set image_url = logo_url %}
-{% set description = "Darksky is an invite-only Electronics and software R&amp;D community founded in 2010" %}
-
+{% set base_url = "https://darksky.io/" -%}
+{% set logo_url = "/static/darksky-light-bg.svg" -%}
+{# Override per article -#}
+{% set site_name = site_name|default("Darksky blog") -%}
+{% set title = title|default(site_name) -%}
+{% set image_url = logo_url -%}
+{% set description = description|default("Darksky is an invite-only Electronics and software R&amp;D community founded in 2010") -%}
 
 <html>
     <head>
+    {% block head %}
         <title>{{title}}</title>
-        <meta name="description" content="{{description}}">
+        <meta name="description" content="{{description|striptags}}">
 
 
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
-        <meta name="description" content="{{description}}" />
 
         <meta name="HandheldFriendly" content="True" />
 
@@ -36,13 +34,13 @@
         <meta property="og:site_name" content="{{site_name}}" />
         <meta property="og:type" content="website" />
         <meta property="og:title" content="{{title}}" />
-        <meta property="og:description" content="{{description}}" />
+        <meta property="og:description" content="{{description|striptags}}" />
         <meta property="og:url" content="{{base_url}}" />
         <meta property="og:image" content="{{image_url}}" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="{{title}}" />
-        <meta name="twitter:description" content="{{description}}" />
+        <meta name="twitter:description" content="{{description|striptags}}" />
         <meta name="twitter:url" content="{{base_url}}" />
         <meta name="twitter:image:src" content="{{image_url}}" />
 
@@ -53,7 +51,7 @@
                 "publisher": "darksky.io",
                 "url": "{{base_url}}",
                 "image": "{{image_url}}",
-                "description": "{{description}}"
+                "description": "{{description|striptags}}"
             }
         </script>
 
@@ -84,6 +82,7 @@
         {% endfor %}
         <link rel="prefetch" href="about.html" />
         <link rel="prerender" href="{{prerender}}" />
+    {% endblock head %}
     </head>
     <!-- hack to make :active work on touch -->
     <body onmouseover="">
