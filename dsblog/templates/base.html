@@ -13,7 +13,7 @@
 {# Override per article -#}
 {% set site_name = site_name|default("Darksky blog") -%}
 {% set title = title|default(site_name) -%}
-{% set image_url = logo_url -%}
+{% set image_url = image_url|default(logo_url) -%}
 {% set description = description|default("Darksky is an invite-only Electronics and software R&amp;D community founded in 2010") -%}
 
 <html>
@@ -36,13 +36,13 @@
         <meta property="og:title" content="{{title}}" />
         <meta property="og:description" content="{{description|striptags}}" />
         <meta property="og:url" content="{{base_url}}" />
-        <meta property="og:image" content="{{image_url}}" />
+        <meta property="og:image" content="{{base_url}}{{image_url}}" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="{{title}}" />
         <meta name="twitter:description" content="{{description|striptags}}" />
         <meta name="twitter:url" content="{{base_url}}" />
-        <meta name="twitter:image:src" content="{{image_url}}" />
+        <meta name="twitter:image:src" content="{{base_url}}{{image_url}}" />
 
         <script type="application/ld+json">
             {
@@ -50,7 +50,7 @@
                 "@type": "Website",
                 "publisher": "darksky.io",
                 "url": "{{base_url}}",
-                "image": "{{image_url}}",
+                "image": "{{base_url}}{{image_url}}",
                 "description": "{{description|striptags}}"
             }
         </script>
