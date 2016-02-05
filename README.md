@@ -1,7 +1,6 @@
-DSBLOG aggregates articles and user profiles from:
+DSBLOG aggregates articles and user profiles from a discourse blog category.
+RSS feeds are also supported.
 
- 1. A discourse blog category
- 2. RSS feeds
 
 
 Look at `config.example.yml` for configuration.
@@ -13,4 +12,7 @@ To run:
     pip install -r requirements.txt
     python ./dsblog/dsblog.py config.example.yml build/
 
-You'll find the website in build.
+You'll find the website in build. The build output is idempotent and stateful
+-- previous articles/users are remembered so that old articles that fall off an
+RSS feed persist. All output is text, line based so it can be version controlled.
+
