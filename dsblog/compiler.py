@@ -19,6 +19,8 @@ from localiser import Localizer,Slugger
 import sys
 import json
 
+from datetime import datetime
+
 def make_header_image(img):
     img = img.resize((710,int(img.height*710/img.width)),Image.ANTIALIAS)
     img = img.crop((
@@ -51,6 +53,7 @@ def main():
 
     env = Environment(loader=FileSystemLoader(os.path.join(script_dir,'templates')))
     env.filters["domain"] = lambda url: urlparse(url).netloc
+    env.globals["compile_date"] = datetime.now()
 
 
     articles = list()
