@@ -98,7 +98,7 @@ article > section {
 }
 
 article > section img {
-    margin:0 auto;
+    margin:50px auto;
     display:block;
 }
 
@@ -170,7 +170,7 @@ pre {
     background:#eee;
     padding:10px;
     border-top:3px solid gray;
-    margin:20px 0;
+    margin:50px 0;
 }
 
 .about-text {
