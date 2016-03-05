@@ -153,6 +153,19 @@ hr {
     margin:50px 0 80px 0;
 }
 
+code {
+    background:#eee;
+    padding:0 3px;
+    font-size:15px;
+}
+
+pre {
+    background:#eee;
+    padding:10px;
+    border-top:3px solid gray;
+    margin:20px 0;
+}
+
 /* remove IE dots */
 a:active { outline: none; }
 
