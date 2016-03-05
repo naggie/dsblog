@@ -91,10 +91,14 @@ article span {
 
 article > section {
     word-wrap: break-word;
-    font-size: 1.0em;
+    font-size: 1.1em;
     line-height: 1.7em;
     font-family: "Merriweather", serif;
     color:#333;
+}
+
+article > section p {
+    margin:0 0 1.75em 0;
 }
 
 
