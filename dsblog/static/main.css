@@ -168,6 +168,11 @@ pre {
     margin:20px 0;
 }
 
+.about-footer {
+    font-style:italic;
+    color:gray;
+}
+
 /* remove IE dots */
 a:active { outline: none; }
 
