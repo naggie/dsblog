@@ -142,14 +142,12 @@ hr {
 
 .profiles .profile {
     padding-bottom:30px;
-    margin-bottom:50px;
-    display:inline-block;
-    width:320px;
     vertical-align:top;
     box-sizing:border-box;
     padding:0 20px 20px 20px;
     border:1px solid #eee;
-    margin:0 20px 20px 0;
+    margin:70px 0;
+    text-align:center;
 }
 
 
