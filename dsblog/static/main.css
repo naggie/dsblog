@@ -88,7 +88,7 @@ article span {
     vertical-align:middle;
 }
 
-article > section {
+article > .article-content {
     word-wrap: break-word;
     font-size: 1.0em;
     line-height: 1.7em;
@@ -96,12 +96,12 @@ article > section {
     color:#333;
 }
 
-article > section img {
+article > .article-content img {
     margin:50px auto;
     display:block;
 }
 
-article > section p {
+article > .article-content p {
     margin:0 0 1.75em 0;
 }
 
@@ -109,8 +109,8 @@ article > section p {
 a:hover { color:black; }
 a:active { color:gray; }
 
-article section a,
-article section a:visited
+article .article-content a,
+article .article-content a:visited
 
 {
     color:#444;
@@ -197,7 +197,7 @@ a:active { outline: none; }
         margin-left:-355px!important;
     }
 
-    section img {
+    .article-content img {
         max-width:100%;
         height:inherit;
     }

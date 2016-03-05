@@ -7,7 +7,7 @@
         </a>
         {% endif %}
     </header>
-    <section>
+    <div class="article-section">
         {% if articles %}
         {# this should be an excerpt #}
         {{article.excerpt}}
@@ -15,7 +15,7 @@
         {% else %}
         {{article.content}}
         {% endif %}
-    </section>
+    </div>
     <footer>
         {% if article.author_image %}
         <img class="author-thumb" width="40" height="40" src="{{article.author_image}}" alt="{{article.author_name}}" />

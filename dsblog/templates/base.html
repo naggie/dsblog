@@ -84,9 +84,13 @@ Software consultancy. It is also an invite-only community founded in 2010.") -%}
 
         {% for link in prefetch %}
         <link rel="prefetch" href="{{link}}" />
-        {% endfor %}
+        {% else %}
         <link rel="prefetch" href="about.html" />
+        {% endfor %}
+
+        {% if prerender %}
         <link rel="prerender" href="{{prerender}}" />
+        {% endif %}
     {% endblock head %}
     </head>
     <!-- hack to make :active work on touch -->
