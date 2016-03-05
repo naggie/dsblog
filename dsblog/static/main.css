@@ -97,6 +97,11 @@ article > section {
     color:#333;
 }
 
+article > section img {
+    margin:0 auto;
+    display:block;
+}
+
 article > section p {
     margin:0 0 1.75em 0;
 }
@@ -168,9 +173,14 @@ pre {
     margin:20px 0;
 }
 
-.about-footer {
+.about-text {
     font-style:italic;
     color:gray;
+}
+
+.profiles .about-text {
+    position:relative;
+    top:-14px;
 }
 
 /* remove IE dots */
