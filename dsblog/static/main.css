@@ -148,7 +148,7 @@ hr {
     padding-bottom:30px;
     vertical-align:top;
     box-sizing:border-box;
-    padding:0 20px 20px 20px;
+    padding:0 60px 30px 60px;
     border:1px solid #eee;
     margin:70px 0;
     text-align:center;
@@ -202,7 +202,7 @@ a:active { outline: none; }
     }
 
     .profiles .profile {
-        padding-bottom:30px;
+        padding:0 15px 15px 15px;
         margin-bottom:50px;
         display:inline-block;
         width:100%;
