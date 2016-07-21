@@ -1,4 +1,4 @@
-# may factor into generic crawler interface + processor
+'System to crawl discourse articles'
 import requests
 from iso8601 import parse_date
 from tqdm import tqdm
@@ -6,9 +6,12 @@ import re
 from bs4 import BeautifulSoup
 from crawler import Crawler
 
-class Discourse(Crawler):
+class DiscourseExporter(Crawler):
     def __init__(self,url,api_user,api_key,category="Blog",extra_usernames=[]):
-        super(Discourse,self).__init__(url)
+        self.url = url.strip('/')
+
+        self.articles = list()
+        self.user_profiles = list()
 
         self.api_key = api_key
         self.api_user = api_user
@@ -16,6 +19,36 @@ class Discourse(Crawler):
 
         self.usernames = set(extra_usernames)
 
+
+
+    def find_image(self,html):
+        'look for best image URL or None, for header image'
+        content = BeautifulSoup(html,'html.parser')
+        image = None
+        for img in content.find_all('img'):
+            try:
+                if 'emoji' in img['class'] or 'avatar' in img['class']:
+                    continue
+            except KeyError:
+                pass
+
+            image = img['src']
+            break
+
+        return image
+
+    def generate_excerpt(self,content):
+        excerpt = unicode()
+        content = BeautifulSoup(content,'html.parser')
+        for p in content.find_all('p'):
+            for img in p.find_all('img'):
+                img.extract()
+
+            excerpt += p.prettify(formatter="html")
+            if len(excerpt) > 140:
+                break
+
+        return excerpt
     def get(self,*path):
         'get an API URL where list path is transformed into a JSON request and parsed'
 

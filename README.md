@@ -1,6 +1,6 @@
-DSBLOG aggregates articles and user profiles from a discourse blog category.
-RSS feeds are also supported.
+DSBLOG renders articles and user profiles from a discourse blog category.
 
+Articles can be imported from other systems in an idempotent manner.
 
 
 Look at `config.example.yml` for configuration.
@@ -14,5 +14,5 @@ To run:
 
 You'll find the website in build. The build output is idempotent and stateful
 -- previous articles/users are remembered so that old articles that fall off an
-RSS feed persist. All output is text, line based so it can be version controlled.
+RSS feeds persist. All output is text, line based so it can be version controlled.
 
