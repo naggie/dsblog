@@ -4,10 +4,9 @@ from iso8601 import parse_date
 from tqdm import tqdm
 import re
 from bs4 import BeautifulSoup
-from crawler import Crawler
 
-class DiscourseExporter(Crawler):
-    def __init__(self,url,api_user,api_key,category="Blog",extra_usernames=[]):
+class DiscourseExporter():
+    def __init__(self,url,api_user,api_key,category="blog"):
         self.url = url.strip('/')
 
         self.articles = list()
@@ -17,7 +16,7 @@ class DiscourseExporter(Crawler):
         self.api_user = api_user
         self.category = category
 
-        self.usernames = set(extra_usernames)
+        self.usernames = set()
 
 
 

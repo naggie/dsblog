@@ -3,7 +3,7 @@ from time import mktime
 from datetime import datetime
 import pytz
 
-class Feed(Crawler):
+class Feed():
     def __init__(self,url,username,full_articles=True):
         self.username = username
 

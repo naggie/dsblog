@@ -13,8 +13,7 @@ import requests
 from StringIO import StringIO
 import yaml
 from collections import Counter
-from crawlers.discourse import Discourse
-from crawlers.feed import Feed
+from discourse import DiscourseExporter
 from localiser import Localizer,Slugger
 import sys
 import json
@@ -32,15 +31,15 @@ def make_header_image(img):
     return img
 
 def main():
-    if len(sys.argv) != 3:
-        print "DSblog aggregator"
-        print "Usage: %s <config.yml> <build_dir/>" % sys.argv[0]
+    if len(sys.argv) != 2:
+        print "DSblog compiler"
+        print "Usage: %s <config.yml>" % sys.argv[0]
         sys.exit()
     else:
-        build_dir = sys.argv[2]
         with open(sys.argv[1]) as f:
             config = yaml.load(f.read())
 
+    build_dir = config['output_dir']
 
     build_static_dir = os.path.join(build_dir,'static')
     script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -59,24 +58,19 @@ def main():
     articles = list()
     user_profiles = list()
 
-    for task in config:
-        crawler_name = task["crawler"]
-        del task["crawler"]
-        if crawler_name == "Discourse":
-            crawler = Discourse(**task)
-        elif crawler_name == "Feed":
-            crawler = Feed(**task)
-        else:
-            raise NotImplementedError("%s crawler not implemented" % task.crawler)
+    discourseExporter = DiscourseExporter(
+            url=config["url"],
+            api_user=config["api_user"],
+            api_key=config["api_key"],
+            category=config["category"],
+    )
 
 
-        print crawler_name + ': %s...' % crawler.url
-        crawler.crawl()
-        articles += crawler.articles
+    discourseExporter.crawl()
+    articles += discourseExporter.articles
 
-        # TODO merge down properly
-        user_profiles += crawler.user_profiles
-
+    # TODO merge down properly
+    user_profiles += discourseExporter.user_profiles
 
 
     # merge with previous archive (some posts may have changed or may have
