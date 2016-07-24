@@ -30,18 +30,9 @@ def make_header_image(img):
     ))
     return img
 
-def main():
-    if len(sys.argv) != 2:
-        print "DSblog compiler"
-        print "Usage: %s <config.yml>" % sys.argv[0]
-        sys.exit()
-    else:
-        with open(sys.argv[1]) as f:
-            config = yaml.load(f.read())
+def compile(url,api_user,api_key,category,output_dir):
 
-    build_dir = config['output_dir']
-
-    build_static_dir = os.path.join(build_dir,'static')
+    build_static_dir = os.path.join(output_dir,'static')
     script_dir = os.path.dirname(os.path.realpath(__file__))
 
     if os.path.exists(build_static_dir):
@@ -59,10 +50,10 @@ def main():
     user_profiles = list()
 
     discourseExporter = DiscourseExporter(
-            url=config["url"],
-            api_user=config["api_user"],
-            api_key=config["api_key"],
-            category=config["category"],
+            url=url,
+            api_user=api_user,
+            api_key=api_key,
+            category=category,
     )
 
 
@@ -79,8 +70,8 @@ def main():
     # 15 or so items. Users, which are valuable for attribution, may be banned
     # or have their account deleted. The posts should not vanish implicitly
     # because of this, it should be a manual process.
-    articles_json_filepath = os.path.join(build_dir,'articles.json')
-    user_profiles_json_filepath = os.path.join(build_dir,'user_profiles.json')
+    articles_json_filepath = os.path.join(output_dir,'articles.json')
+    user_profiles_json_filepath = os.path.join(output_dir,'user_profiles.json')
     # load previous articles
     if os.path.exists(articles_json_filepath):
         with open(articles_json_filepath) as f:
@@ -130,7 +121,7 @@ def main():
     # * Make slug for url path, giving precedence to older articles
     slugify = Slugger(['index']).slugify
     localiser = Localizer(
-            local_dir = os.path.join(build_dir,'images'),
+            local_dir = os.path.join(output_dir,'images'),
             url = 'images/',
     )
 
@@ -151,7 +142,7 @@ def main():
 
         if article.get('image'):
             filename = slugify('header-'+article['image'])
-            filepath = os.path.join(build_dir,'images',filename)
+            filepath = os.path.join(output_dir,'images',filename)
 
             src = article['image']
             article['image'] = 'images/'+filename
@@ -224,7 +215,7 @@ def main():
 
 
     template = env.get_template('blog.html')
-    filepath = os.path.join(build_dir,'index.html')
+    filepath = os.path.join(output_dir,'index.html')
     template.stream(
             articles=articles,
             prefetch=[articles[0]["url"]],
@@ -234,15 +225,13 @@ def main():
     template = env.get_template('article_page.html')
     for article in articles:
         if article['content']:
-            filepath = os.path.join(build_dir,article['url'])
+            filepath = os.path.join(output_dir,article['url'])
             template.stream(article=article).dump(filepath)
 
 
     template = env.get_template('about.html')
-    filepath = os.path.join(build_dir,'about.html')
+    filepath = os.path.join(output_dir,'about.html')
     template.stream(
             profiles=user_profiles,
     ).dump(filepath)
 
-if __name__ == "__main__":
-    main()
