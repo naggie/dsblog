@@ -6,20 +6,34 @@ from bs4 import BeautifulSoup
 # https://jsonpickle.github.io/ ?
 
 class Article():
-    def __init__(self,body,title,username,url,pubdate,guid=None):
+    def __init__(self,body,title,username,origin,pubdate,guid=None):
         'Requires fully qualified image URLs and links. URL must also be fully qualified.'
         self.body = body # original, always
         self.title = title
         self.username = username
-        self.url = url
+        self.origin = origin
         self.pubdate = pubdate
 
-        self.guid = guid or url
+        self.guid = guid or origin
+
         self.revision = hash(title+body)
+
+        if not origin.startswith('http'):
+            raise ValueError('origin should be a fully qualified URL')
+
+
+        for anchor in BeautifulSoup(body,'html.parser').find_all('a'):
+            if not anchor['href'].startswith('http'):
+                raise ValueError('All links must be fully qualified. Offence: %s' % anchor['href'])
+
+        for img in BeautifulSoup(body,'html.parser').find_all('img'):
+            if not img['src'].startswith('http'):
+                raise ValueError('All images must be fully qualified. Offence: %s' % img['src'])
+
 
     def excerpt(self):
         excerpt = unicode()
-        content = BeautifulSoup(self.localised_body,'html.parser')
+        content = BeautifulSoup(self.body,'html.parser')
         for p in content.find_all('p'):
             for img in p.find_all('img'):
                 img.extract()
