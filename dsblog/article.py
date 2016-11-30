@@ -1,9 +1,20 @@
 from bs4 import BeautifulSoup
+from hashlib import sha256
+from os.path import join
+import splitext
+import config
 
 # TODO some kind of automatic serialisation support:
 # https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
 # JSON (prettyprinted) is prefered so src can be under version control
 # https://jsonpickle.github.io/ ?
+
+def get_deterministic_filename(img_url):
+    'Get a deterministic local filename given a URL.'
+    base,ext = splitext(img_url)
+
+    return sha256(img_url).hexdigest() + ext
+
 
 class Article():
     def __init__(self,body,title,username,origin,pubdate,guid=None):
@@ -18,17 +29,32 @@ class Article():
 
         self.revision = hash(title+body)
 
+
+        # dict of original URL to local filepath and new URL
+        self.img_url_map = dict()
+
         if not origin.startswith('http'):
             raise ValueError('origin should be a fully qualified URL')
-
 
         for anchor in BeautifulSoup(body,'html.parser').find_all('a'):
             if not anchor['href'].startswith('http'):
                 raise ValueError('All links must be fully qualified. Offence: %s' % anchor['href'])
 
         for img in BeautifulSoup(body,'html.parser').find_all('img'):
-            if not img['src'].startswith('http'):
-                raise ValueError('All images must be fully qualified. Offence: %s' % img['src'])
+            src = img['src']
+            if not src.startswith('http'):
+                raise ValueError('All images must be fully qualified. Offence: %s' % src)
+
+
+            filename = get_deterministic_filename(src)
+            local_path = join(config.IMG_BASE_DIR,filename)
+            new_url = join(config.IMG_BASE_URL,filename)
+
+            self.img_url_map[src] = (local_path,new_url)
+
+
+    def download_images():
+        pass
 
 
     def excerpt(self):
