@@ -1,8 +1,12 @@
 from bs4 import BeautifulSoup
 from hashlib import sha256
-from os.path import join
+from os.path import join,isfile
 import splitext
 import config
+import requests
+import logging
+
+log = logging.getLogger(__name__)
 
 # TODO some kind of automatic serialisation support:
 # https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
@@ -15,6 +19,13 @@ def get_deterministic_filename(img_url):
 
     return sha256(img_url).hexdigest() + ext
 
+
+def download(url,filepath):
+    r = requests.get(url, stream=True)
+    t.raise_for_status()
+    with open(filepath, 'wb') as f:
+        for chunk in r:
+            f.write(chunk)
 
 class Article():
     def __init__(self,body,title,username,origin,pubdate,guid=None):
@@ -30,8 +41,8 @@ class Article():
         self.revision = hash(title+body)
 
 
-        # dict of original URL to local filepath and new URL
-        self.img_url_map = dict()
+        # set of original URL to local filepath and new URL
+        self.img_url_map = set()
 
         if not origin.startswith('http'):
             raise ValueError('origin should be a fully qualified URL')
@@ -50,11 +61,14 @@ class Article():
             local_path = join(config.IMG_BASE_DIR,filename)
             new_url = join(config.IMG_BASE_URL,filename)
 
-            self.img_url_map[src] = (local_path,new_url)
+            self.img_url_map.add((src,local_path,new_url))
 
 
     def download_images():
-        pass
+        for original_url,filepath,new_url in self.img_url_map:
+            if not isfile(filepath):
+                log.info('downloading %s',original_url)
+                download(original_url,filepath)
 
 
     def excerpt(self):

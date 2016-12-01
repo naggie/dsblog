@@ -1,5 +1,8 @@
 # TODO -- must be part of yml. Defaults here though.
 
+
+OUTPUT_DIR='.'
+
 # for export
 BASE_URL='https://darksky.io/'
 
