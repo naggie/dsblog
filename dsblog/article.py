@@ -5,6 +5,7 @@ import splitext
 import config
 import requests
 import logging
+from PIL import Image
 
 log = logging.getLogger(__name__)
 
@@ -13,6 +14,9 @@ log = logging.getLogger(__name__)
 # JSON (prettyprinted) is prefered so src can be under version control
 # https://jsonpickle.github.io/ ?
 
+
+# TODO maybe use map to find first image, which can be inspected!
+
 def get_deterministic_filename(img_url):
     'Get a deterministic local filename given a URL.'
     base,ext = splitext(img_url)
@@ -20,12 +24,15 @@ def get_deterministic_filename(img_url):
     return sha256(img_url).hexdigest() + ext
 
 
-def download(url,filepath):
-    r = requests.get(url, stream=True)
-    t.raise_for_status()
-    with open(filepath, 'wb') as f:
-        for chunk in r:
-            f.write(chunk)
+def download(url,filepath,lazy=True):
+    if not isfile(filepath) or not lazy:
+        log.info('downloading %s',original_url)
+        r = requests.get(url, stream=True)
+        t.raise_for_status()
+        with open(filepath, 'wb') as f:
+            for chunk in r:
+                f.write(chunk)
+
 
 class Article():
     def __init__(self,body,title,username,origin,pubdate,guid=None):
@@ -40,6 +47,7 @@ class Article():
 
         self.revision = hash(title+body)
 
+        self.first_img_url = self._find_first_image_url()
 
         # set of original URL to local filepath and new URL
         self.img_url_map = set()
@@ -66,9 +74,7 @@ class Article():
 
     def download_images():
         for original_url,filepath,new_url in self.img_url_map:
-            if not isfile(filepath):
-                log.info('downloading %s',original_url)
-                download(original_url,filepath)
+            download(original_url,filepath)
 
 
     def excerpt(self):
@@ -91,22 +97,26 @@ class Article():
     def localised_body(self):
         pass
 
-    def _download_images(self):
-        pass
+    def header_img(self):
+        'return a local header image, 710x64'
+        return
 
-    def _find_first_image_url(self):
-        'look for best image URL or None, for header image'
-        content = BeautifulSoup(self.body,'html.parser')
-        image = None
-        for img in content.find_all('img'):
-            try:
-                if 'emoji' in img['class'] or 'avatar' in img['class']:
-                    continue
-            except KeyError:
-                pass
+    def header_image(self):
+        for original_url,local_path,new_url in self.img_url_map:
+            # inspect for suitable dimensions
+            img = Image.open(local_path)
+            if width > 500:
+                break
+        else:
+            return None
 
-            image = img['src']
-            break
+        img = img.resize((710,int(img.height*710/img.width)),Image.ANTIALIAS)
+        img = img.crop((
+            0,
+            int(img.height/2)-50,
+            710,
+            int(img.height/2)+50,
+        ))
+        img.save(filepath)
 
-        return image
-
+        return new_url
