@@ -14,9 +14,6 @@ log = logging.getLogger(__name__)
 # JSON (prettyprinted) is prefered so src can be under version control
 # https://jsonpickle.github.io/ ?
 
-
-# TODO maybe use map to find first image, which can be inspected!
-
 def get_deterministic_filename(img_url):
     'Get a deterministic local filename given a URL.'
     base,ext = splitext(img_url)
@@ -32,6 +29,23 @@ def download(url,filepath,lazy=True):
         with open(filepath, 'wb') as f:
             for chunk in r:
                 f.write(chunk)
+
+
+class ArticleImage():
+    def __init__(self,url):
+        self.original_url = url
+        filename = get_deterministic_filename(url)
+        self.local_path = join(config.IMG_BASE_DIR,filename)
+        self.new_url = join(config.IMG_BASE_URL,filename)
+
+        self.width = None
+        self.height = None
+
+    def download(self):
+        download(self.original_url,self.local_path)
+        self.img = Image(self.local_path)
+        self.height = img.height
+        self.width = img.width
 
 
 class Article():
@@ -50,7 +64,7 @@ class Article():
         self.first_img_url = self._find_first_image_url()
 
         # set of original URL to local filepath and new URL
-        self.img_url_map = set()
+        self.images = list()
 
         if not origin.startswith('http'):
             raise ValueError('origin should be a fully qualified URL')
@@ -65,16 +79,12 @@ class Article():
                 raise ValueError('All images must be fully qualified. Offence: %s' % src)
 
 
-            filename = get_deterministic_filename(src)
-            local_path = join(config.IMG_BASE_DIR,filename)
-            new_url = join(config.IMG_BASE_URL,filename)
-
-            self.img_url_map.add((src,local_path,new_url))
+            self.images.append(ArticleImage(src))
 
 
     def download_images():
-        for original_url,filepath,new_url in self.img_url_map:
-            download(original_url,filepath)
+        for image in self.images:
+            image.download()
 
 
     def excerpt(self):
@@ -101,28 +111,25 @@ class Article():
         return body
 
     def header_img(self):
-        for original_url,local_path,new_url in self.img_url_map:
-            # inspect for suitable dimensions
-            if not isfile(local_path):
-                continue
-
-            img = Image.open(local_path)
-            if width > 500:
+        'grab the local URL to a header image. Images must be downloaded first'
+        for image in self.images:
+            if image.width > 500:
                 break
         else:
             return None
 
-        img = img.resize((710,int(img.height*710/img.width)),Image.ANTIALIAS)
+        img = image.img.resize((710,int(img.height*710/img.width)),Image.ANTIALIAS)
         img = img.crop((
             0,
             int(img.height/2)-50,
             710,
             int(img.height/2)+50,
         ))
-        img.save(filepath)
 
         header_filename = get_deterministic_filename(original_url)
-        header_local_path = join(config.HEADER_IMG_BASE_DIR,header_filename)
+        header_filepath = join(config.HEADER_IMG_BASE_DIR,header_filename)
         header_url = join(config.HEADER_IMG_BASE_URL,header_filename)
+
+        img.save(header_filepath)
 
         return header_url
