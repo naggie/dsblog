@@ -90,18 +90,17 @@ class Article():
 
         return excerpt
 
-    def header_image(self):
-        'Return a local URL to a header image'
-        pass
 
     def localised_body(self):
-        pass
+        body = self.body
+
+        for original_url,local_path,new_url in self.img_url_map:
+            # could use BeautifulSoup instead in case image URLs are hacked!
+            body = body.replace(original_url,new_url)
+
+        return body
 
     def header_img(self):
-        'return a local header image, 710x64'
-        return
-
-    def header_image(self):
         for original_url,local_path,new_url in self.img_url_map:
             # inspect for suitable dimensions
             if not isfile(local_path):
