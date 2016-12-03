@@ -104,6 +104,9 @@ class Article():
     def header_image(self):
         for original_url,local_path,new_url in self.img_url_map:
             # inspect for suitable dimensions
+            if not isfile(local_path):
+                continue
+
             img = Image.open(local_path)
             if width > 500:
                 break
@@ -119,4 +122,8 @@ class Article():
         ))
         img.save(filepath)
 
-        return new_url
+        header_filename = get_deterministic_filename(original_url)
+        header_local_path = join(config.HEADER_IMG_BASE_DIR,header_filename)
+        header_url = join(config.HEADER_IMG_BASE_URL,header_filename)
+
+        return header_url
