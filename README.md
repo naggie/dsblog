@@ -1,5 +1,5 @@
 DSBLOG aggregates articles and user profiles from a discourse blog category.
-RSS feeds are also supported.
+DSBLOG can also import articles from RSS feeds to discourse.
 
 
 

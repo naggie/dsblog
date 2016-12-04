@@ -14,6 +14,8 @@ log = logging.getLogger(__name__)
 # JSON (prettyprinted) is prefered so src can be under version control
 # https://jsonpickle.github.io/ ?
 
+# TODO resize images, link to original
+
 def get_deterministic_filename(img_url):
     'Get a deterministic local filename given a URL.'
     base,ext = splitext(img_url)
@@ -35,17 +37,26 @@ class ArticleImage():
     def __init__(self,url):
         self.original_url = url
         filename = get_deterministic_filename(url)
-        self.local_path = join(config.IMG_BASE_DIR,filename)
-        self.new_url = join(config.IMG_BASE_URL,filename)
 
+        self.filepath = join(config.ORIGINAL_IMG_BASE_DIR,filename)
+        self.url = join(config.ORIGINAL_IMG_BASE_URL,filename)
         self.width = None
         self.height = None
 
+        self.scaled_filepath = join(config.SCALED_IMG_BASE_DIR,filename)
+        self.scaled_url = join(config.ORIGINAL_IMG_BASE_URL,filename)
+        self.scaled_width = None
+        self.scaled_height = None
+
     def download(self):
-        download(self.original_url,self.local_path)
-        self.img = Image(self.local_path)
+        download(self.original_url,self.filepath)
+        self.img = Image(self.filepath))
         self.height = img.height
         self.width = img.width
+
+        self.img = Image(self.scaled_filepath))
+        self.scaled_height = img.height
+        self.scaled_width = img.width
 
 
 class Article():

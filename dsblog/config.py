@@ -4,9 +4,15 @@
 OUTPUT_DIR='.'
 
 # for export
-IMG_BASE_URL='img/'
-IMG_BASE_DIR='img/'
+HEADER_IMG_BASE_URL='images/header/'
+HEADER_IMG_BASE_DIR='images/header/'
 
-HEADER_IMG_BASE_URL='header_img/'
-HEADER_IMG_BASE_DIR='header_img/'
+SCALED_IMG_BASE_URL='images/scaled/'
+SCALED_IMG_BASE_DIR='images/scaled/'
+
+ORIGINAL_IMG_BASE_URL='images/original/'
+ORIGINAL_IMG_BASE_DIR='images/original/'
+
+AVATAR_IMG_BASE_URL='images/avatar/'
+AVATAR_IMG_BASE_DIR='images/avatar/'
 
