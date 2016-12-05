@@ -66,15 +66,16 @@ class ArticleImage():
 
 
 class Article():
-    def __init__(self,body,title,username,origin,pubdate,guid=None):
+    def __init__(self,body,title,username,origin,pubdate,full=True,guid=None):
         'Requires fully qualified image URLs and links. URL must also be fully qualified.'
         self.body = body # original, always
         self.title = title
         self.username = username
         self.origin = origin
         self.pubdate = pubdate
-
+        self.full = full
         self.guid = guid or origin
+
 
         self.revision = hash(title+body)
 
@@ -147,7 +148,7 @@ class Article():
             int(img.height/2)+50,
         ))
 
-        header_filename = get_deterministic_filename(original_url)
+        header_filename = get_deterministic_filename(image.original_url)
         header_filepath = join(config.HEADER_IMG_BASE_DIR,header_filename)
         header_url = join(config.HEADER_IMG_BASE_URL,header_filename)
 
