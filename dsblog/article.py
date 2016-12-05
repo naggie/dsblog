@@ -76,13 +76,12 @@ class Article():
         self.full = full
         self.guid = guid or origin
 
-
         self.revision = hash(title+body)
 
-        self.first_img_url = self._find_first_image_url()
-
-        # set of original URL to local filepath and new URL
+        # ORDERED list of ArticleImage objects.
         self.images = list()
+        # a map for easy lookup.
+        self.image_map = dict()
 
         if not origin.startswith('http'):
             raise ValueError('origin should be a fully qualified URL')
@@ -96,8 +95,9 @@ class Article():
             if not src.startswith('http'):
                 raise ValueError('All images must be fully qualified. Offence: %s' % src)
 
-
-            self.images.append(ArticleImage(src))
+            image = ArticleImage(src)
+            self.images.append(image)
+            self.image_map[src] = image
 
 
     def download_images():
@@ -119,14 +119,25 @@ class Article():
         return excerpt
 
 
-    def localised_body(self):
-        body = self.body
+    def compile_body(self):
+        'Localise and annotate images + prettify HTML'
+        soup = BeautifulSoup(self.body, 'html.parser')
 
-        for original_url,local_path,new_url in self.img_url_map:
-            # could use BeautifulSoup instead in case image URLs are hacked!
-            body = body.replace(original_url,new_url)
+        for img in soup.find_all('img'):
+            if not img.get("width") or not img.get("height"):
+                if img["src"].startswith('data'):
+                    # data URI, deterministic as already loaded. No need.
+                    return
 
-        return body
+                image = self.image_map[img['src']]
+                img['src'] = image.scaled_url
+                img['height'] = image.scaled_height
+                img['width'] = image.scaled_width
+
+                # TODO wrap wide images in link to original
+
+        return soup.prettify(formatter="html")
+
 
     def header_img(self):
         'grab the local URL to a header image. Images must be downloaded first'
@@ -155,3 +166,5 @@ class Article():
         img.save(header_filepath)
 
         return header_url
+
+

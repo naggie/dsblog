@@ -21,16 +21,6 @@ import json
 
 from datetime import datetime
 
-def make_header_image(img):
-    img = img.resize((710,int(img.height*710/img.width)),Image.ANTIALIAS)
-    img = img.crop((
-        0,
-        int(img.height/2)-50,
-        710,
-        int(img.height/2)+50,
-    ))
-    return img
-
 def main():
     if len(sys.argv) != 3:
         print "DSblog aggregator"
