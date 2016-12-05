@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 from hashlib import sha256
-from os.path import join,isfile
-import splitext
+from os.path import join,isfile,splitext
 import config
 import requests
 import logging
@@ -14,7 +13,6 @@ log = logging.getLogger(__name__)
 # JSON (prettyprinted) is prefered so src can be under version control
 # https://jsonpickle.github.io/ ?
 
-# TODO resize images, link to original
 
 def get_deterministic_filename(img_url):
     'Get a deterministic local filename given a URL.'
@@ -50,21 +48,21 @@ class ArticleImage():
 
     def download(self):
         download(self.original_url,self.filepath)
-        self.img = Image(self.filepath))
-        self.height = self.img.height
-        self.width = self.img.width
+        img = Image(self.filepath)
+        self.height = img.height
+        self.width = img.width
 
-        self.scaled_img = self.img
+        scaled_img = img
 
-        if self..width > config.DEFAULT_IMAGE_WIDTH:
-            self.scaled_img = self.scaled_img.resize(
+        if img.width > config.DEFAULT_IMAGE_WIDTH:
+            scaled_img = scaled_img.resize(
                     (
                         config.DEFAULT_IMAGE_WIDTH,
-                        int(self.img.height*config.DEFAULT_IMAGE_WIDTH/self.img.width)
+                        int(img.height*config.DEFAULT_IMAGE_WIDTH/img.width)
                     ),Image.ANTIALIAS)
 
-        self.scaled_height = self.scaled_img.height
-        self.scaled_width = self.scaled_img.width
+        self.scaled_height = scaled_img.height
+        self.scaled_width = scaled_img.width
 
 
 class Article():
@@ -137,7 +135,11 @@ class Article():
         else:
             return None
 
-        img = image.img.resize((config.DEFAULT_IMAGE_WIDTH,int(img.height*config.DEFAULT_IMAGE_WIDTH/img.width)),Image.ANTIALIAS)
+        img = Image(image.filepath).resize((
+                config.DEFAULT_IMAGE_WIDTH,
+                int(img.height*config.DEFAULT_IMAGE_WIDTH/img.width
+            )),Image.ANTIALIAS)
+
         img = img.crop((
             0,
             int(img.height/2)-50,
