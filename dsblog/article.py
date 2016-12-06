@@ -100,12 +100,18 @@ class Article():
             self.image_map[src] = image
 
 
+        self.images_downloaded = False
+
+
     def download_images():
         for image in self.images:
             image.download()
 
+        self.images_downloaded = False
+
 
     def excerpt(self):
+        'Generate an image-free excerpt'
         excerpt = unicode()
         content = BeautifulSoup(self.body,'html.parser')
         for p in content.find_all('p'):
@@ -120,7 +126,11 @@ class Article():
 
 
     def compile_body(self):
-        'Localise and annotate images + prettify HTML'
+        'Localise and annotate images + prettify HTML. Download images first.'
+
+        if not self.images_downloaded:
+            raise RuntimeError('Image not downloaded yet. Run download() method first to obtain images')
+
         soup = BeautifulSoup(self.body, 'html.parser')
 
         for img in soup.find_all('img'):
@@ -141,6 +151,10 @@ class Article():
 
     def header_img(self):
         'grab the local URL to a header image. Images must be downloaded first'
+
+        if not self.images_downloaded:
+            raise RuntimeError('Image not downloaded yet. Run download() method first to obtain images')
+
         for image in self.images:
             if image.width > 500:
                 break

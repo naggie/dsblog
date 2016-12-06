@@ -32,8 +32,6 @@ def main():
             config = yaml.load(f.read())
 
 
-    build_static_dir = os.path.join(build_dir,'static')
-    script_dir = os.path.dirname(os.path.realpath(__file__))
 
     if os.path.exists(build_static_dir):
         rmtree(build_static_dir)
@@ -48,25 +46,6 @@ def main():
 
     articles = list()
     user_profiles = list()
-
-    for task in config:
-        crawler_name = task["crawler"]
-        del task["crawler"]
-        if crawler_name == "Discourse":
-            crawler = Discourse(**task)
-        elif crawler_name == "Feed":
-            crawler = Feed(**task)
-        else:
-            raise NotImplementedError("%s crawler not implemented" % task.crawler)
-
-
-        print crawler_name + ': %s...' % crawler.url
-        crawler.crawl()
-        articles += crawler.articles
-
-        # TODO merge down properly
-        user_profiles += crawler.user_profiles
-
 
 
     # merge with previous archive (some posts may have changed or may have
