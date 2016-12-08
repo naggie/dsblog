@@ -1,5 +1,4 @@
 from article import Article
-# could share common parent with article. Very similar!
 
 
 class Comment(Article):

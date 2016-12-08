@@ -32,7 +32,7 @@ def download(url,filepath,lazy=True):
 
 
 class ArticleImage():
-    def __init__(self,url):
+    def __init__(self,url,max_width=config.DEFAULT_ARTICLE_IMAGE_WIDTH):
         self.original_url = url
         filename = get_deterministic_filename(url)
 
@@ -46,6 +46,8 @@ class ArticleImage():
         self.scaled_width = None
         self.scaled_height = None
 
+        self._max_width = max_width
+
     def process(self):
         download(self.original_url,self.filepath)
         img = Image(self.filepath)
@@ -54,11 +56,11 @@ class ArticleImage():
 
         scaled_img = img
 
-        if img.width > config.DEFAULT_ARTICLE_IMAGE_WIDTH:
+        if img.width > self._max_width:
             scaled_img = scaled_img.resize(
                     (
-                        config.DEFAULT_ARTICLE_IMAGE_WIDTH,
-                        int(img.height*config.DEFAULT_ARTICLE_IMAGE_WIDTH/img.width)
+                        self._max_width,
+                        int(img.height*self._max_width/img.width)
                     ),Image.ANTIALIAS)
 
         self.scaled_height = scaled_img.height
@@ -103,7 +105,7 @@ class Article():
         self.images_processed = False
 
 
-    def process_images():
+    def process():
         for image in self.images:
             image.process()
 
