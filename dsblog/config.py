@@ -13,8 +13,5 @@ SCALED_IMG_BASE_DIR='images/scaled/'
 ORIGINAL_IMG_BASE_URL='images/original/'
 ORIGINAL_IMG_BASE_DIR='images/original/'
 
-AVATAR_IMG_BASE_URL='images/avatar/'
-AVATAR_IMG_BASE_DIR='images/avatar/'
-
 # must match CSS.
-DEFAULT_IMAGE_WIDTH = 710
+DEFAULT_ARTICLE_IMAGE_WIDTH = 710

@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 # TODO some kind of automatic serialisation support:
 # https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
 # JSON (prettyprinted) is prefered so src can be under version control
-# https://jsonpickle.github.io/ ?
+# https://jsonpickle.github.io/ ? NOOO -- pyyaml does all of this!
 
 
 def get_deterministic_filename(img_url):
@@ -46,7 +46,7 @@ class ArticleImage():
         self.scaled_width = None
         self.scaled_height = None
 
-    def download(self):
+    def process(self):
         download(self.original_url,self.filepath)
         img = Image(self.filepath)
         self.height = img.height
@@ -54,11 +54,11 @@ class ArticleImage():
 
         scaled_img = img
 
-        if img.width > config.DEFAULT_IMAGE_WIDTH:
+        if img.width > config.DEFAULT_ARTICLE_IMAGE_WIDTH:
             scaled_img = scaled_img.resize(
                     (
-                        config.DEFAULT_IMAGE_WIDTH,
-                        int(img.height*config.DEFAULT_IMAGE_WIDTH/img.width)
+                        config.DEFAULT_ARTICLE_IMAGE_WIDTH,
+                        int(img.height*config.DEFAULT_ARTICLE_IMAGE_WIDTH/img.width)
                     ),Image.ANTIALIAS)
 
         self.scaled_height = scaled_img.height
@@ -66,15 +66,15 @@ class ArticleImage():
 
 
 class Article():
-    def __init__(self,body,title,username,origin,pubdate,full=True,guid=None):
+    def __init__(self,body,title,username,url,pubdate,full=True,guid=None):
         'Requires fully qualified image URLs and links. URL must also be fully qualified.'
         self.body = body # original, always
         self.title = title
         self.username = username
-        self.origin = origin
+        self.url = url
         self.pubdate = pubdate
         self.full = full
-        self.guid = guid or origin
+        self.guid = guid or url
 
         self.revision = hash(title+body)
 
@@ -83,8 +83,8 @@ class Article():
         # a map for easy lookup.
         self.image_map = dict()
 
-        if not origin.startswith('http'):
-            raise ValueError('origin should be a fully qualified URL')
+        if not url.startswith('http'):
+            raise ValueError('article url should be fully qualified')
 
         for anchor in BeautifulSoup(body,'html.parser').find_all('a'):
             if not anchor['href'].startswith('http'):
@@ -100,14 +100,14 @@ class Article():
             self.image_map[src] = image
 
 
-        self.images_downloaded = False
+        self.images_processed = False
 
 
-    def download_images():
+    def process_images():
         for image in self.images:
-            image.download()
+            image.process()
 
-        self.images_downloaded = False
+        self.images_processed = False
 
 
     def excerpt(self):
@@ -126,10 +126,10 @@ class Article():
 
 
     def compile_body(self):
-        'Localise and annotate images + prettify HTML. Download images first.'
+        'Localise and annotate images + prettify HTML. Process images first.'
 
-        if not self.images_downloaded:
-            raise RuntimeError('Image not downloaded yet. Run download() method first to obtain images')
+        if not self.images_processed:
+            raise RuntimeError('Image not processed yet. Run process() method first to obtain images')
 
         soup = BeautifulSoup(self.body, 'html.parser')
 
@@ -150,26 +150,27 @@ class Article():
 
 
     def header_img(self):
-        'grab the local URL to a header image. Images must be downloaded first'
+        'grab the local URL to a header image. Images must be processed first'
 
-        if not self.images_downloaded:
-            raise RuntimeError('Image not downloaded yet. Run download() method first to obtain images')
+        if not self.images_processed:
+            raise RuntimeError('Image not processed yet. Run process() method first to obtain images')
 
         for image in self.images:
+            # not an emoji, avatar, etc.
             if image.width > 500:
                 break
         else:
             return None
 
         img = Image(image.filepath).resize((
-                config.DEFAULT_IMAGE_WIDTH,
-                int(img.height*config.DEFAULT_IMAGE_WIDTH/img.width
+                config.DEFAULT_ARTICLE_IMAGE_WIDTH,
+                int(img.height*config.DEFAULT_ARTICLE_IMAGE_WIDTH/img.width
             )),Image.ANTIALIAS)
 
         img = img.crop((
             0,
             int(img.height/2)-50,
-            config.DEFAULT_IMAGE_WIDTH,
+            config.DEFAULT_ARTICLE_IMAGE_WIDTH,
             int(img.height/2)+50,
         ))
 
