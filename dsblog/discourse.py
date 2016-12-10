@@ -1,7 +1,6 @@
 # may factor into generic crawler interface + processor
 import requests
 from iso8601 import parse_date
-from tqdm import tqdm
 import re
 from bs4 import BeautifulSoup
 
@@ -78,7 +77,7 @@ class Discourse():
 
 
         # load topics (containing posts: article then comments)
-        for id in tqdm(ids,leave=True):
+        for id in ids:
             topic = self.get('t',id)
             first_post = topic['post_stream']['posts'][0]
 
@@ -123,4 +122,5 @@ class Discourse():
             ))
 
     def publish(self,article):
+        "Lazily publish an article. Only publish if A) local cache doesn't contain article at revision and B) nor does discourse"
         pass

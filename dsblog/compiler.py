@@ -8,7 +8,6 @@ import re
 from shutil import copytree,rmtree
 from PIL import Image
 from bs4 import BeautifulSoup
-from tqdm import tqdm
 import requests
 from StringIO import StringIO
 import yaml
@@ -170,16 +169,6 @@ def main():
 
 
     localiser.download()
-
-    print "Annotating images..."
-    for article in tqdm(articles,leave=True):
-        if article.get('content'):
-            article["content"] = localiser.annotate_images(article["content"])
-
-
-        if article.get("comments"):
-            for comment in article["comments"]:
-                comment["content"] = localiser.annotate_images(comment["content"])
 
 
     # now, sort for display

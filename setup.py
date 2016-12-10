@@ -24,7 +24,7 @@ setup(
     #scripts = ['dsblog/dsblog.py'],
     entry_points = {
         'console_scripts': [
-            'dsblog = dsblog.compiler:main',
+            'dsblog = dsblog.main:main',
             ],
         },
     install_requires = packages,
