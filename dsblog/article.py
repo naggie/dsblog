@@ -13,6 +13,8 @@ log = logging.getLogger(__name__)
 # JSON (prettyprinted) is prefered so src can be under version control
 # https://jsonpickle.github.io/ ? NOOO -- pyyaml does all of this!
 
+# TODO idempotent way of adding comments to an existing article
+
 
 def get_deterministic_filename(img_url):
     'Get a deterministic local filename given a URL.'
