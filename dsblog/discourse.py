@@ -4,9 +4,8 @@ from iso8601 import parse_date
 from tqdm import tqdm
 import re
 from bs4 import BeautifulSoup
-from crawler import Crawler
 
-class Discourse(Crawler):
+class Discourse():
     def __init__(self,url,api_user,api_key,category="Blog",extra_usernames=[]):
         super(Discourse,self).__init__(url)
 
