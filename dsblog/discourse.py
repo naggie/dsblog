@@ -5,6 +5,9 @@ from tqdm import tqdm
 import re
 from bs4 import BeautifulSoup
 
+from article import Article,Comment
+from user_profile import UserProfile
+
 class Discourse():
     def __init__(self,url,api_user,api_key,category="Blog",extra_usernames=[]):
         super(Discourse,self).__init__(url)
@@ -95,29 +98,29 @@ class Discourse():
                 })
 
 
-            self.articles.append({
-                "title":topic['title'],
-                "url": '/'.join([self.url,'t',topic['slug'],str(id)]),
-                "comments_url": '/'.join([self.url,'t',topic['slug'],str(id)]),
-                "image": self.find_image(content),
-                # fix internal image URLS which don't have protocol
-                "content":content,
-                "excerpt":self.generate_excerpt(content),
-                "username":first_post["username"],
-                "published":parse_date(first_post['created_at']),
-                "comments":comments,
-            })
+            self.articles.append(Article(
+                title=topic['title'],
+                url='/'.join([self.url,'t',topic['slug'],str(id)]),
+                body=content,
+                excerpt=self.generate_excerpt(content),
+                username=first_post[username],
+                pubdate=parse_date(first_post['created_at']),
+                #comments=comments,
+            )
 
         # get user profiles (cannot list emails)
         for username in self.usernames:
             p = self.get('users',username)["user"]
-            self.user_profiles.append({
-                    "username" : p["username"],
-                    "name" : p["name"],
-                    "avatar":self.url+p["avatar_template"].format(size=200),
-                    "title" : p["title"],
-                    "bio" : p["bio_cooked"],
-                    "website" : p["website"],
-                    "invited_by" : p["invited_by"]["username"] if p.get("invited_by") else None,
-                    "attributes" : {}, # links to twitter, linkedin, etc
-            })
+            self.user_profiles.append(UserProfile(
+                    username=p["username"],
+                    name=p["name"],
+                    title=p["title"],
+                    avatar=self.url+p["avatar_template"].format(size=200),
+                    bio=p["bio_cooked"],
+                    website=p["website"],
+                    #invited_by=p["invited_by"]["username"] if p.get("invited_by") else None,
+                    attributes={}, # links to twitter, linkedin, etc
+            ))
+
+    def publish(self,article):
+        pass
