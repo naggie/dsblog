@@ -9,11 +9,13 @@ from user_profile import UserProfile
 
 class Discourse():
     def __init__(self,url,api_user,api_key,category="Blog",extra_usernames=[]):
-        super(Discourse,self).__init__(url)
-
+        self.url = url
         self.api_key = api_key
         self.api_user = api_user
         self.category = category
+
+        self.articles = list()
+        self.user_profiles = list()
 
         self.usernames = set(extra_usernames)
 
@@ -101,11 +103,10 @@ class Discourse():
                 title=topic['title'],
                 url='/'.join([self.url,'t',topic['slug'],str(id)]),
                 body=content,
-                excerpt=self.generate_excerpt(content),
-                username=first_post[username],
+                username=first_post['username'],
                 pubdate=parse_date(first_post['created_at']),
                 #comments=comments,
-            )
+            ))
 
         # get user profiles (cannot list emails)
         for username in self.usernames:
@@ -118,7 +119,7 @@ class Discourse():
                     bio=p["bio_cooked"],
                     website=p["website"],
                     #invited_by=p["invited_by"]["username"] if p.get("invited_by") else None,
-                    attributes={}, # links to twitter, linkedin, etc
+                    #attributes={}, # links to twitter, linkedin, etc
             ))
 
     def publish(self,article):
