@@ -12,9 +12,9 @@ def crawl(url,username,full_articles=True):
 
         yield Article(
             title=entry['title'],
-            url= entry[link],
+            url= entry['link'],
             body=entry["content"][0]["value"] if 'content' in entry else entry["summary"],
             username=username,
-            pubdate=pytz.utc.localize(datetime.fromtimestamp(mktime(entry[published_parsed]))),
-        })
+            pubdate=pytz.utc.localize(datetime.fromtimestamp(mktime(entry['published_parsed']))),
+        )
 

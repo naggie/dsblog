@@ -7,6 +7,8 @@ from bs4 import BeautifulSoup
 from article import Article,Comment
 from user_profile import UserProfile
 
+# TODO read article header
+
 class Discourse():
     def __init__(self,url,api_user,api_key,category="Blog",extra_usernames=[]):
         self.url = url
