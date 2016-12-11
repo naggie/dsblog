@@ -36,7 +36,7 @@ def download(url,filepath,lazy=True):
                 f.write(chunk)
 
 
-class ArticleImage():
+class ArticleImage(object):
     def __init__(self,url,max_width=config.DEFAULT_ARTICLE_IMAGE_WIDTH):
         self.original_url = url
         filename = get_deterministic_filename(url)
@@ -72,8 +72,8 @@ class ArticleImage():
         self.scaled_width = scaled_img.width
 
 
-class Article():
-    def __init__(self,body,title,username,url,pubdate,full=True,guid=None):
+class Article(object):
+    def __init__(self,body,username,url,pubdate,title='',full=True,guid=None):
         'Requires fully qualified image URLs and links. URL must also be fully qualified.'
         self.body = body # original, always
         self.title = title
@@ -195,7 +195,6 @@ class Comment(Article):
 
         super(Comment,self).__init__(
                 body=body,
-                title=None,
                 username=username,
                 url=article_url,
                 pubdate=pubdate,

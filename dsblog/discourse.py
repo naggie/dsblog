@@ -17,6 +17,7 @@ class Discourse():
         self.category = category
 
         self.articles = list()
+        self.comments = list()
         self.user_profiles = list()
 
         self.usernames = set(extra_usernames)
@@ -93,25 +94,23 @@ class Discourse():
 
             content = self.normalise_html(first_post['cooked'])
 
-            article_url='/'.join([self.url,'t',topic['slug'],str(id)]),
+            article_url='/'.join([self.url,'t',topic['slug'],str(id)])
 
-            comments = list()
             for post in topic['post_stream']['posts'][1:]:
-                comments.append(Comment(
+                self.comments.append(Comment(
                     body=self.normalise_html(post['cooked']),
                     article_url=article_url,
                     pubdate=parse_date(post['created_at']),
                     username=post['username'],
-                })
+                ))
 
 
             self.articles.append(Article(
                 title=topic['title'],
-                article_url=article_url,
+                url=article_url,
                 body=content,
                 username=first_post['username'],
                 pubdate=parse_date(first_post['created_at']),
-                #comments=comments,
             ))
 
         # get user profiles (cannot list emails)
