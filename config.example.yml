@@ -5,16 +5,13 @@ category: blog
 build_dir: /srv/http/darksky.io/public/blog
 # articles by discourse users from external websites
 # will be written to discourse for discussion
-import:
-  - class: Feed
-    url: "https://jamesreuss.co.uk/index.xml"
+feed_import:
+  - url: "https://jamesreuss.co.uk/index.xml"
     username: jimjibone
 
-  - class: Feed
-    url: "https://callanbryant.co.uk/rss/"
+  - url: "https://callanbryant.co.uk/rss/"
     username: naggie
 
-  - class: Feed
-    url: "https://frillip.com/rss/"
+  - url: "https://frillip.com/rss/"
     username: frill
 
