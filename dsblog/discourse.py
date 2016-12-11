@@ -93,17 +93,21 @@ class Discourse():
 
             content = self.normalise_html(first_post['cooked'])
 
+            article_url='/'.join([self.url,'t',topic['slug'],str(id)]),
+
             comments = list()
             for post in topic['post_stream']['posts'][1:]:
-                comments.append({
-                    "content": self.normalise_html(post['cooked']),
-                    "username": post['username'],
+                comments.append(Comment(
+                    body=self.normalise_html(post['cooked']),
+                    article_url=article_url,
+                    pubdate=parse_date(post['created_at']),
+                    username=post['username'],
                 })
 
 
             self.articles.append(Article(
                 title=topic['title'],
-                url='/'.join([self.url,'t',topic['slug'],str(id)]),
+                article_url=article_url,
                 body=content,
                 username=first_post['username'],
                 pubdate=parse_date(first_post['created_at']),
