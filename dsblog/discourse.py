@@ -3,13 +3,15 @@ import requests
 from iso8601 import parse_date
 import re
 from bs4 import BeautifulSoup
-
+import logging
 from article import Article,Comment
 from user_profile import UserProfile
 
 # TODO read article header
 # TODO publish articles
 # TODO write article header
+
+log = logging.getLogger(__name__)
 
 class Discourse():
     def __init__(self,url,api_user,api_key,category="Blog",extra_usernames=[]):

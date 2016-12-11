@@ -81,7 +81,6 @@ class Article(object):
         self.url = url
         self.pubdate = pubdate
         self.full = full
-        self.guid = guid or url
 
         self.revision = hash(title+body)
 
@@ -199,5 +198,6 @@ class Comment(Article):
                 url=article_url,
                 pubdate=pubdate,
                 full=True,
-                guid=article_url+'#'+pubdate.isoformat(),
             )
+
+        self.article_url = article_url

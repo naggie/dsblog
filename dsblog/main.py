@@ -24,6 +24,11 @@ def main():
         with open(sys.argv[1]) as f:
             config = yaml.load(f.read())
 
+
+    articles = dict()
+    comments = dict()
+    user_profiles = dict()
+
     discourse = Discourse(
             api_user = config['api_user'],
             api_key = config['api_key'],
@@ -32,8 +37,12 @@ def main():
 
     discourse.crawl()
 
+    for article in discourse.articles:
+        articles[article.url] = article
+
     for kwargs in config['feed_import']:
-        articles = feed.crawl(**kwargs)
+        for article in feed.crawl(**kwargs):
+            articles[article.url] = article
 
 
 
