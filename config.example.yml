@@ -2,7 +2,7 @@ url: "https://boards.darksky.io"
 api_user: naggie
 api_key: <redatacted>
 category: blog
-build_dir: /srv/http/darksky.io/public/blog
+output_dir: /srv/http/darksky.io/public/blog
 # articles by discourse users from external websites
 # will be written to discourse for discussion
 feed_import:

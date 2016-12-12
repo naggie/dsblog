@@ -1,12 +1,13 @@
 from bs4 import BeautifulSoup
 from hashlib import sha256
 from os.path import join,isfile,splitext
-import config
+from config import getConfig
 import requests
 import logging
 from PIL import Image
 
 log = logging.getLogger(__name__)
+config = getConfig()
 
 # TODO some kind of automatic serialisation support:
 # https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
@@ -37,17 +38,17 @@ def download(url,filepath,lazy=True):
 
 
 class ArticleImage(object):
-    def __init__(self,url,max_width=config.DEFAULT_ARTICLE_IMAGE_WIDTH):
+    def __init__(self,url,max_width=config['max_article_img_width']):
         self.original_url = url
         filename = get_deterministic_filename(url)
 
-        self.filepath = join(config.ORIGINAL_IMG_BASE_DIR,filename)
-        self.url = join(config.ORIGINAL_IMG_BASE_URL,filename)
+        self.filepath = join(config['original_img_dir'],filename)
+        self.url = join(config['original_img_dir'],filename)
         self.width = None
         self.height = None
 
-        self.scaled_filepath = join(config.SCALED_IMG_BASE_DIR,filename)
-        self.scaled_url = join(config.ORIGINAL_IMG_BASE_URL,filename)
+        self.scaled_filepath = join(config['scaled_img_dir'],filename)
+        self.scaled_url = join(config['scaled_img_dir'],filename)
         self.scaled_width = None
         self.scaled_height = None
 
@@ -169,20 +170,20 @@ class Article(object):
             return None
 
         img = Image(image.filepath).resize((
-                config.DEFAULT_ARTICLE_IMAGE_WIDTH,
-                int(img.height*config.DEFAULT_ARTICLE_IMAGE_WIDTH/img.width
-            )),Image.ANTIALIAS)
+                config['max_article_img_width'],
+                int(img.height*config['max_article_img_width']/img.width)
+            ),Image.ANTIALIAS)
 
         img = img.crop((
             0,
             int(img.height/2)-50,
-            config.DEFAULT_ARTICLE_IMAGE_WIDTH,
+            config['max_article_img_width'],
             int(img.height/2)+50,
         ))
 
         header_filename = get_deterministic_filename(image.original_url)
-        header_filepath = join(config.HEADER_IMG_BASE_DIR,header_filename)
-        header_url = join(config.HEADER_IMG_BASE_URL,header_filename)
+        header_filepath = join(config['header_img_dir'],header_filename)
+        header_url = join(config['header_img_dir'],header_filename)
 
         img.save(header_filepath)
 

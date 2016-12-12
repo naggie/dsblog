@@ -1,0 +1,8 @@
+output_dir: .
+
+header_img_dir: 'imgs/headers/'
+scaled_img_dir: 'imgs/scaled/'
+original_img_dir: 'imgs/original/'
+
+max_article_img_width: 710
+max_avatar_width: 710

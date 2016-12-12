@@ -1,10 +1,11 @@
 #/usr/bin/env python
-import yaml
+from config import getConfig, loadConfig
 import sys
 from discourse import Discourse
 import feed
 import logging
 import colorlog
+from shutil import copytree,rmtree
 
 handler = colorlog.StreamHandler()
 handler.setFormatter(colorlog.ColoredFormatter('%(asctime)s  %(log_color)s%(levelname)s%(reset)s %(name)s: %(message)s'))
@@ -15,14 +16,18 @@ logger.addHandler(handler)
 # reduce spam
 logging.getLogger("requests").setLevel(logging.WARNING)
 
+def init(config):
+    copytree(os.path.join(script_dir,'static'),config['build_dir'])
+
 def main():
     if len(sys.argv) != 2:
         print "DSblog aggregator"
         print "Usage: %s <config.yml>" % sys.argv[0]
         sys.exit()
     else:
-        with open(sys.argv[1]) as f:
-            config = yaml.load(f.read())
+        loadConfig(sys.argv[1])
+
+    config = getConfig()
 
 
     articles = dict()

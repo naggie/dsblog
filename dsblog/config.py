@@ -1,18 +1,24 @@
-# TODO -- must be part of yml. Defaults here though.
+import yaml
+from os.path import join,dirname,realpath
+
+script_dir = dirname(realpath(__file__))
+default_yml_filepath = join(script_dir,'defaults.yml')
 
 
-OUTPUT_DIR='.'
+config = dict()
 
-# for export
-HEADER_IMG_BASE_URL='images/header/'
-HEADER_IMG_BASE_DIR='images/header/'
+def getConfig():
+    if not config:
+        raise RuntimeError('config not loaded yet')
 
-SCALED_IMG_BASE_URL='images/scaled/'
-SCALED_IMG_BASE_DIR='images/scaled/'
+    return config
 
-ORIGINAL_IMG_BASE_URL='images/original/'
-ORIGINAL_IMG_BASE_DIR='images/original/'
 
-# must match CSS.
-DEFAULT_ARTICLE_IMAGE_WIDTH = 710
-DEFAULT_AVATAR_WIDTH = 256
+def loadConfig(yml_filepath):
+    with open(default_yml_filepath) as f:
+        patch = yaml.load(f.read())
+
+    with open(yml_filepath) as f:
+        patch = yaml.load(f.read())
+
+    config.update(patch)
