@@ -133,6 +133,8 @@ class Article(object):
 
         self.images_processed = True
 
+        self.header_img()
+
 
     def excerpt(self):
         'Generate an image-free excerpt'
@@ -179,30 +181,34 @@ class Article(object):
         if not self.images_processed:
             raise RuntimeError('Image not processed yet. Run process() method first to obtain images')
 
-        for image in self.images:
+        for article_image in self.images:
             # not an emoji, avatar, etc.
-            if image.width > 500:
+            if article_image.width > 500:
                 break
         else:
             return None
 
-        img = Image(image.filepath).resize((
-                config['max_article_img_width'],
-                int(img.height*config['max_article_img_width']/img.width)
-            ),Image.ANTIALIAS)
 
-        img = img.crop((
-            0,
-            int(img.height/2)-50,
-            config['max_article_img_width'],
-            int(img.height/2)+50,
-        ))
-
-        header_filename = get_deterministic_filename(image.original_url)
+        header_filename = get_deterministic_filename(article_image.original_url)
         header_filepath = join(config['header_img_dir'],header_filename)
         header_url = join(config['header_img_dir'],header_filename)
 
-        img.save(header_filepath)
+        if not isfile(header_filepath):
+            log.info('generating article header from %s',header_url)
+            img = Image.open(article_image.filepath).resize((
+                    config['max_article_img_width'],
+                    int(article_image.height*config['max_article_img_width']/article_image.width)
+                ),Image.ANTIALIAS)
+
+            img = img.crop((
+                0,
+                int(article_image.height/2)-50,
+                config['max_article_img_width'],
+                int(article_image.height/2)+50,
+            ))
+
+            img.save(header_filepath)
+
 
         return header_url
 
