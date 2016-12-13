@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from hashlib import sha256
 from os.path import join,isfile,splitext
-from config import getConfig
+from environment import getConfig
 import requests
 import logging
 from PIL import Image

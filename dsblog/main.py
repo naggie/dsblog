@@ -1,5 +1,5 @@
 #/usr/bin/env python
-from config import getConfig, loadConfig
+from environment import getConfig, loadConfig
 import sys
 import logging
 import colorlog
