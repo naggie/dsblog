@@ -238,7 +238,7 @@ class Article(object):
 
     # sorting a list of articles will sort by reverse pubdate.
     def __cmp__(self,other):
-        return self.pubdate > other.pubdate
+        return 1 if self.pubdate < other.pubdate else -1
 
 
 class Comment(Article):
