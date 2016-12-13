@@ -1,28 +1,23 @@
 <article>
     <header>
         <h2><a href="{{article.url}}">{{article.title}}</a></h2>
-        {% if article.image and articles %}
+        {% if article.header_img() and articles %}
         <a href="{{article.url}}">
-            <img class="post-image" alt="Title image" width="710" height="100" src="{{article.image}}" />
+            <img class="post-image" alt="Title image" width="710" height="100" src="{{article.header_img()}}" />
         </a>
         {% endif %}
     </header>
     <div class="article-content">
-        {% if articles %}
-        {# this should be an excerpt #}
-        {{article.excerpt}}
+        {{article.excerpt()}}
         <a href="{{article.url}}">Read more...</a>
-        {% else %}
-        {{article.content}}
-        {% endif %}
     </div>
     <footer>
         {% if article.author_image %}
         <img class="author-thumb" width="40" height="40" src="{{article.author_image}}" alt="{{article.author_name}}" />
         {% endif %}
         <a href="{{article.author_url}}">{{article.author_name}}</a>
-        <span> &nbsp; | &nbsp; {{article.published.strftime('%-d %B %Y')}}</span>
-        <span> &nbsp; | &nbsp; via </span><a href="{{article.origin}}">{{article.origin|domain}}</a>
+        <span> &nbsp; | &nbsp; {{article.pubdate.strftime('%-d %B %Y')}}</span>
+        <span> &nbsp; | &nbsp; via </span><a href="{{article.origin}}">{{article.origin}}</a>
 
     </footer>
 </article>

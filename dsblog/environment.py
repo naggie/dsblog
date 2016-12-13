@@ -12,10 +12,18 @@ defaults = {
     "scaled_img_dir": 'imgs/scaled/',
     "original_img_dir": 'imgs/original/',
 
+    "header_img_url": 'imgs/headers/',
+    "scaled_img_url": 'imgs/scaled/',
+    "original_img_url": 'imgs/original/',
+
+    "template_dir": join(script_dir,'templates'),
+
     "max_article_img_width": 710,
     "max_avatar_width": 710,
 
     "database_file": "database.yml",
+
+    "static_dir": join(script_dir,'static'),
 }
 
 config = dict()

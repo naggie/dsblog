@@ -4,6 +4,11 @@ import sys
 import logging
 import colorlog
 from shutil import copytree,rmtree
+import jinja2
+from os.path import join,isdir
+from datetime import datetime
+
+# TODO count articles for user profiles with reducer function 
 
 handler = colorlog.StreamHandler()
 handler.setFormatter(colorlog.ColoredFormatter('%(asctime)s  %(log_color)s%(levelname)s%(reset)s %(name)s: %(message)s'))
@@ -33,9 +38,17 @@ def main():
     import feed
 
 
+    output_static_dir = join(config['output_dir'],'static')
+
+    if isdir(output_static_dir):
+        rmtree(output_static_dir)
+
+    copytree(config['static_dir'],output_static_dir)
+
+
     articles = dict()
     comments = dict()
-    user_profiles = dict()
+    profiles = dict()
 
     discourse = Discourse(
             api_user = config['api_user'],
@@ -48,6 +61,9 @@ def main():
     for article in discourse.articles:
         articles[article.url] = article
 
+    for profile in discourse.user_profiles:
+        profiles[profile.username] = profile
+
     for kwargs in config['feed_import']:
         for article in feed.crawl(**kwargs):
             articles[article.url] = article
@@ -56,6 +72,21 @@ def main():
     for article in articles.values():
         article.process()
 
+
+    env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(config['template_dir']),
+        )
+
+    env.globals["compile_date"] = datetime.now()
+
+
+    template = env.get_template('blog.html')
+    filepath = join(config['output_dir'],'index.html')
+    template.stream(
+            articles=sorted(articles.values()),
+            #prefetch=[articles[0].url],
+            #prerender=articles[0].url,
+    ).dump(filepath)
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ from environment import getConfig
 import requests
 import logging
 from PIL import Image
+from urlparse import urlparse
 import re
 
 log = logging.getLogger(__name__)
@@ -58,12 +59,12 @@ class ArticleImage(object):
         filename = get_deterministic_filename(url)
 
         self.filepath = join(config['original_img_dir'],filename)
-        self.url = join(config['original_img_dir'],filename)
+        self.url = join(config['original_img_url'],filename)
         self.width = None
         self.height = None
 
         self.scaled_filepath = join(config['scaled_img_dir'],filename)
-        self.scaled_url = join(config['scaled_img_dir'],filename)
+        self.scaled_url = join(config['scaled_img_url'],filename)
         self.scaled_width = None
         self.scaled_height = None
 
@@ -97,9 +98,14 @@ class Article(object):
         self.body = body # original, always
         self.title = title
         self.username = username
-        self.url = url
+        self.original_url = url
+        self.origin = urlparse(url).netloc
         self.pubdate = pubdate
         self.full = full
+
+        self.slug = re.sub(r'[^0-9a-zA-Z]+','-',title).lower()+'-'+sha256().hexdigest()[:6]
+
+        self.url = '%s.html' % self.slug
 
         self.revision = hash(title+body)
 
@@ -108,7 +114,7 @@ class Article(object):
         # a map for easy lookup.
         self.image_map = dict()
 
-        if not url.startswith('http'):
+        if not self.original_url.startswith('http'):
             raise ValueError('article url should be fully qualified')
 
         for anchor in BeautifulSoup(body,'html.parser').find_all('a'):
@@ -196,7 +202,7 @@ class Article(object):
 
         header_filename = get_deterministic_filename(article_image.original_url)
         header_filepath = join(config['header_img_dir'],header_filename)
-        header_url = join(config['header_img_dir'],header_filename)
+        header_url = join(config['header_img_url'],header_filename)
 
         if not isfile(header_filepath):
             log.info('generating article header from %s',article_image.original_url)
@@ -217,6 +223,10 @@ class Article(object):
 
 
         return header_url
+
+    # sorting a list of articles will sort by reverse pubdate.
+    def __cmp__(self,other):
+        return self.pubdate > other.pubdate
 
 
 class Comment(Article):
