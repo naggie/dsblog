@@ -12,10 +12,8 @@
         <a href="{{article.url}}">Read more...</a>
     </div>
     <footer>
-        {% if article.author_image %}
-        <img class="author-thumb" width="40" height="40" src="{{article.author_image}}" alt="{{article.author_name}}" />
-        {% endif %}
-        <a href="{{article.author_url}}">{{article.author_name}}</a>
+        <img class="author-thumb" width="40" height="40" src="{{profiles[article.username].avatar.scaled_url}}" alt="{{profiles[article.username].name}}" />
+        <a href="{{profiles[article.username].website}}">{{profiles[article.username].name}}</a>
         <span> &nbsp; | &nbsp; {{article.pubdate.strftime('%-d %B %Y')}}</span>
         <span> &nbsp; | &nbsp; via </span><a href="{{article.origin}}">{{article.origin}}</a>
 

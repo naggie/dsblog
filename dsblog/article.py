@@ -21,11 +21,15 @@ config = getConfig()
 
 # TODO embed some from the URL in the filename
 
-
+def dedup_list(l):
+    'preserves order and dedup'
+    ulist = list()
+    [ulist.append(x) for x in l if x not in ulist]
+    return ulist
 
 def get_deterministic_filename(url):
     'Get a deterministic local filename given a URL.'
-    text = re.sub(r'[^0-9a-zA-Z\.]+','-',url).lower()
+    text = re.sub(r'[^a-zA-Z\.]+','-',url).lower()
     # a few very common fragments
     text = re.sub(r'^https?-','',text)
     text = re.sub(r'(img|image)s?-','',text)
@@ -35,6 +39,9 @@ def get_deterministic_filename(url):
     text = text.replace('optimized-','')
     text = text.replace('default-','')
     text,ext = splitext(text)
+
+    # remove repeated fragments
+    text = '-'.join( dedup_list(text.split('-')) )
 
     name = text[:50]+'-'+sha256(url).hexdigest()[:16]
 
@@ -78,7 +85,7 @@ class ArticleImage(object):
 
         scaled_img = img
 
-        if img.width > self._max_width and not isfile(self.scaled_filepath):
+        if not isfile(self.scaled_filepath):
             log.info('resizing %s',self.original_url)
             scaled_img = scaled_img.resize(
                     (
@@ -197,7 +204,12 @@ class Article(object):
             if article_image.width > 500:
                 break
         else:
-            return None
+            # oh dear
+            for article_image in self.images:
+                if article_image.width > 250:
+                    break
+            else:
+                return None
 
 
         header_filename = get_deterministic_filename(article_image.original_url)

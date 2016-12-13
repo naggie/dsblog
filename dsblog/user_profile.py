@@ -11,4 +11,5 @@ class UserProfile():
 
 
     def process(self):
+        print 'process',self.avatar.scaled_filepath
         self.avatar.process()

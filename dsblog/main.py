@@ -37,14 +37,12 @@ def main():
     from discourse import Discourse
     import feed
 
-
     output_static_dir = join(config['output_dir'],'static')
 
     if isdir(output_static_dir):
         rmtree(output_static_dir)
 
     copytree(config['static_dir'],output_static_dir)
-
 
     articles = dict()
     comments = dict()
@@ -54,6 +52,7 @@ def main():
             api_user = config['api_user'],
             api_key = config['api_key'],
             url = config['url'],
+            extra_usernames = [k['username'] for k in config['feed_import']],
         )
 
     discourse.crawl()
@@ -62,6 +61,7 @@ def main():
         articles[article.url] = article
 
     for profile in discourse.user_profiles:
+        profile.process()
         profiles[profile.username] = profile
 
     for kwargs in config['feed_import']:
@@ -84,6 +84,7 @@ def main():
     filepath = join(config['output_dir'],'index.html')
     template.stream(
             articles=sorted(articles.values()),
+            profiles=profiles,
             #prefetch=[articles[0].url],
             #prerender=articles[0].url,
     ).dump(filepath)
