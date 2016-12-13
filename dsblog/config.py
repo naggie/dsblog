@@ -18,6 +18,8 @@ def loadConfig(yml_filepath):
     with open(default_yml_filepath) as f:
         patch = yaml.load(f.read())
 
+    config.update(patch)
+
     with open(yml_filepath) as f:
         patch = yaml.load(f.read())
 

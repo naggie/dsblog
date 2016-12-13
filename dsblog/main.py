@@ -1,8 +1,6 @@
 #/usr/bin/env python
 from config import getConfig, loadConfig
 import sys
-from discourse import Discourse
-import feed
 import logging
 import colorlog
 from shutil import copytree,rmtree
@@ -28,6 +26,10 @@ def main():
         loadConfig(sys.argv[1])
 
     config = getConfig()
+
+    # after config is loaded (sue me)
+    from discourse import Discourse
+    import feed
 
 
     articles = dict()

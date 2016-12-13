@@ -14,8 +14,6 @@ config = getConfig()
 # JSON (prettyprinted) is prefered so src can be under version control
 # https://jsonpickle.github.io/ ? NOOO -- pyyaml does all of this!
 
-# TODO idempotent way of adding/syncing comments to an existing article
-
 # TODO automatic wrapping of images in anchor tabs for conditional link to original
 
 
