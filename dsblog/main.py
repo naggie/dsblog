@@ -1,5 +1,5 @@
 #/usr/bin/env python
-from environment import getConfig, loadConfig
+import environment
 import sys
 import logging
 import colorlog
@@ -23,9 +23,10 @@ def main():
         print "Usage: %s <config.yml>" % sys.argv[0]
         sys.exit()
     else:
-        loadConfig(sys.argv[1])
+        environment.loadConfig(sys.argv[1])
 
-    config = getConfig()
+    config = environment.getConfig()
+    environment.makeDirs()
 
     # after config is loaded (sue me)
     from discourse import Discourse
@@ -50,6 +51,10 @@ def main():
     for kwargs in config['feed_import']:
         for article in feed.crawl(**kwargs):
             articles[article.url] = article
+
+
+    for article in articles.values():
+        article.process()
 
 
 

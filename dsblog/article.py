@@ -27,9 +27,9 @@ def get_deterministic_filename(img_url):
 
 def download(url,filepath,lazy=True):
     if not isfile(filepath) or not lazy:
-        log.info('downloading %s',original_url)
+        log.info('downloading %s',url)
         r = requests.get(url, stream=True)
-        t.raise_for_status()
+        r.raise_for_status()
         with open(filepath, 'wb') as f:
             for chunk in r:
                 f.write(chunk)
@@ -54,18 +54,21 @@ class ArticleImage(object):
 
     def process(self):
         download(self.original_url,self.filepath)
-        img = Image(self.filepath)
+        img = Image.open(self.filepath)
         self.height = img.height
         self.width = img.width
 
         scaled_img = img
 
-        if img.width > self._max_width:
+        if img.width > self._max_width and not isfile(self.scaled_filepath):
+            log.info('resizing %s',self.original_url)
             scaled_img = scaled_img.resize(
                     (
                         self._max_width,
                         int(img.height*self._max_width/img.width)
                     ),Image.ANTIALIAS)
+
+            scaled_img.save(self.scaled_filepath)
 
         self.scaled_height = scaled_img.height
         self.scaled_width = scaled_img.width

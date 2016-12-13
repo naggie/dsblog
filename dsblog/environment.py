@@ -1,11 +1,12 @@
 import yaml
-from os.path import join,dirname,realpath
+from os import makedirs
+from os.path import join,dirname,realpath,isdir
 
 script_dir = dirname(realpath(__file__))
 default_yml_filepath = join(script_dir,'defaults.yml')
 
 defaults = {
-    "output_dir": ,
+    "output_dir": 'output',
 
     "header_img_dir": 'imgs/headers/',
     "scaled_img_dir": 'imgs/scaled/',
@@ -36,3 +37,14 @@ def loadConfig(yml_filepath):
     config['header_img_dir'] = join(config['output_dir'],config['header_img_dir'])
     config['scaled_img_dir'] = join(config['output_dir'],config['scaled_img_dir'])
     config['original_img_dir'] = join(config['output_dir'],config['original_img_dir'])
+
+
+def makeDirs():
+    if not config:
+        raise RuntimeError('config not loaded yet')
+
+    for key in ['header_img_dir','scaled_img_dir','original_img_dir']:
+        path = config[key]
+
+        if not isdir(path):
+            makedirs(path)
