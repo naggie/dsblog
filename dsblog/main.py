@@ -70,6 +70,7 @@ def main():
 
 
     for article in articles.values():
+        profiles[article.username].article_count +=1
         article.process()
 
 

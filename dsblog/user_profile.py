@@ -9,6 +9,12 @@ class UserProfile():
         self.bio = bio
         self.website = website
 
+        self.article_count = 0
+
 
     def process(self):
         self.avatar.process()
+
+    # default ordering
+    def __cmp__(self, other):
+        return self.article_count - other.article_count
