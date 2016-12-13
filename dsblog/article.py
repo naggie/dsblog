@@ -5,6 +5,7 @@ from environment import getConfig
 import requests
 import logging
 from PIL import Image
+import re
 
 log = logging.getLogger(__name__)
 config = getConfig()
@@ -16,13 +17,28 @@ config = getConfig()
 
 # TODO automatic wrapping of images in anchor tabs for conditional link to original
 
+# TODO embed some from the URL in the filename
 
 
-def get_deterministic_filename(img_url):
+
+def get_deterministic_filename(url):
     'Get a deterministic local filename given a URL.'
-    base,ext = splitext(img_url)
+    text = re.sub(r'[^0-9a-zA-Z\.]+','-',url).lower()
+    # a few very common fragments
+    text = re.sub(r'^https?-','',text)
+    text = re.sub(r'(img|image)s?-','',text)
+    text = re.sub(r'uploads?-','',text)
+    text = text.replace('content-','')
+    text = text.replace('original-','')
+    text = text.replace('optimized-','')
+    text = text.replace('default-','')
 
-    return sha256(img_url).hexdigest() + ext
+    name = text[:50]+'-'+sha256(url).hexdigest()[:16]
+
+    base,ext = splitext(text)
+
+    # return sha256(url).hexdigest() + ext
+    return name + ext
 
 
 def download(url,filepath,lazy=True):
