@@ -14,6 +14,8 @@ defaults = {
 
     "max_article_img_width": 710,
     "max_avatar_width": 710,
+
+    "database_file": "database.yml",
 }
 
 config = dict()

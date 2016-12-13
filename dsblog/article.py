@@ -1,3 +1,4 @@
+from __future__ import division
 from bs4 import BeautifulSoup
 from hashlib import sha256
 from os.path import join,isfile,splitext
@@ -32,10 +33,10 @@ def get_deterministic_filename(url):
     text = text.replace('original-','')
     text = text.replace('optimized-','')
     text = text.replace('default-','')
+    text,ext = splitext(text)
 
     name = text[:50]+'-'+sha256(url).hexdigest()[:16]
 
-    base,ext = splitext(text)
 
     # return sha256(url).hexdigest() + ext
     return name + ext
@@ -111,11 +112,15 @@ class Article(object):
             raise ValueError('article url should be fully qualified')
 
         for anchor in BeautifulSoup(body,'html.parser').find_all('a'):
-            if not anchor['href'].startswith('http'):
+            if anchor.get('href') and not anchor['href'].startswith('http'):
                 raise ValueError('All links must be fully qualified. Offence: %s' % anchor['href'])
 
         for img in BeautifulSoup(body,'html.parser').find_all('img'):
-            src = img['src']
+            src = img.get('src')
+
+            if not src:
+                return
+
             if not src.startswith('http'):
                 raise ValueError('All images must be fully qualified. Offence: %s' % src)
 
@@ -194,17 +199,18 @@ class Article(object):
         header_url = join(config['header_img_dir'],header_filename)
 
         if not isfile(header_filepath):
-            log.info('generating article header from %s',header_url)
+            log.info('generating article header from %s',article_image.original_url)
             img = Image.open(article_image.filepath).resize((
                     config['max_article_img_width'],
                     int(article_image.height*config['max_article_img_width']/article_image.width)
                 ),Image.ANTIALIAS)
 
+            # -50 +50 around the center line
             img = img.crop((
                 0,
-                int(article_image.height/2)-50,
+                int(img.height/2)-50,
                 config['max_article_img_width'],
-                int(article_image.height/2)+50,
+                int(img.height/2)+50,
             ))
 
             img.save(header_filepath)

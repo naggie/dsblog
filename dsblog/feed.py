@@ -18,4 +18,4 @@ def crawl(url,username,full_articles=True):
             pubdate=pytz.utc.localize(datetime.fromtimestamp(mktime(entry['published_parsed']))),
         ))
 
-        return articles
+    return articles
