@@ -18,9 +18,6 @@ config = getConfig()
 # JSON (prettyprinted) is prefered so src can be under version control
 # https://jsonpickle.github.io/ ? NOOO -- pyyaml does all of this!
 
-# TODO automatic wrapping of images in anchor tabs for conditional link to original
-
-# TODO embed some from the URL in the filename
 
 def remove_side_shadows(img):
     'remove the left and right drop shadows from an image, if grayscale'
@@ -219,11 +216,21 @@ class Article(object):
                     return
 
                 image = self.image_map[img['src']]
+
+                # change to local scaled
                 img['src'] = image.scaled_url
+
+                # annotate to stop jumping DOM
                 img['height'] = image.scaled_height
                 img['width'] = image.scaled_width
 
-                # TODO wrap wide images in link to original
+                # wrap wide images in link to original
+                if image.width > image._max_width:
+                    anchor = soup.new_tag('a')
+                    anchor['href'] = image.url
+
+                    img.wrap(anchor)
+
 
         return soup.prettify(formatter="html")
 
