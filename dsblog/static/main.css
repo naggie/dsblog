@@ -184,6 +184,10 @@ pre {
 a:active { outline: none; }
 
 @media only screen and (max-width: 720px) {
+    nav a {
+        margin:10px;
+    }
+
     #content {
         width:100%;
     }
