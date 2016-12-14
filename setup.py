@@ -18,7 +18,7 @@ with open(path.join(script_dir,'requirements.txt')) as f:
 
 setup(
     name = "dsblog",
-    version = "0.1",
+    version = "2.0",
     packages = find_packages(),
     dependency_links=links,
     #scripts = ['dsblog/dsblog.py'],
@@ -33,7 +33,7 @@ setup(
     author_email = "callan.bryant@gmail.com",
     maintainer = "Callan Bryant",
     maintainer_email = "callan.bryant@gmail.com",
-    description = "Discourse-powered blog aggregator",
+    description = "Discourse-powered static blog generator",
     license = "MIT",
     keywords = "discourse",
     url = "https://darksky.io/",
