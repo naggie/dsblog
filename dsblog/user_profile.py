@@ -17,4 +17,4 @@ class UserProfile():
 
     # default ordering
     def __cmp__(self, other):
-        return self.article_count - other.article_count
+        return other.article_count - self.article_count

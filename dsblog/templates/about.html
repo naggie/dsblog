@@ -11,7 +11,7 @@
         <h3>{{profile.name}}</h3>
         <div class="about-text"><em>{{profile.title}}</em></div>
         {% if profile.avatar %}
-        <img class="avatar" src="{{profile.avatar}}" alt="{{profile.name}}" width="200" height="200" />
+        <img class="avatar" src="{{profile.avatar.scaled_url}}" alt="{{profile.name}}" width="200" height="200" />
         {% endif %}
         <div class="bio"> {{profile.bio}} </div>
         <div class="links">
