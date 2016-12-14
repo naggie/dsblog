@@ -20,7 +20,7 @@
         <img class="author-thumb" width="40" height="40" src="{{profiles[article.username].avatar.scaled_url}}" alt="{{profiles[article.username].name}}" />
         <a href="{{profiles[article.username].website}}">{{profiles[article.username].name}}</a>
         <span> &nbsp; | &nbsp; {{article.pubdate.strftime('%-d %B %Y')}}</span>
-        <span> &nbsp; | &nbsp; via </span><a href="{{article.origin}}">{{article.origin}}</a>
+        <span> &nbsp; | &nbsp; via </span><a href="{{article.original_url}}">{{article.origin}}</a>
 
     </footer>
 </article>
