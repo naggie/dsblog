@@ -90,6 +90,15 @@ def main():
             #prerender=articles[0].url,
     ).dump(filepath)
 
+    template = env.get_template('article_page.html')
+    for article in articles.values():
+        if article.full:
+            filepath = join(config['output_dir'],article.url)
+            template.stream(
+                profiles=profiles,
+                article=article,
+            ).dump(filepath)
+
 
 if __name__ == "__main__":
     main()

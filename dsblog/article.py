@@ -8,6 +8,7 @@ import logging
 from PIL import Image
 from urlparse import urlparse
 import re
+from shutil import copyfile
 
 log = logging.getLogger(__name__)
 config = getConfig()
@@ -110,20 +111,27 @@ class ArticleImage(object):
         self.height = img.height
         self.width = img.width
 
-        scaled_img = img
+        if img.width > self._max_width:
+            self.scaled_width = self._max_width
+            self.scaled_height = int(img.height*self._max_width/img.width)
 
-        if not isfile(self.scaled_filepath):
-            log.info('resizing %s',self.original_url)
-            scaled_img = scaled_img.resize(
-                    (
-                        self._max_width,
-                        int(img.height*self._max_width/img.width)
-                    ),Image.ANTIALIAS)
+            if not isfile(self.scaled_filepath):
+                log.info('resizing %s',self.original_url)
+                scaled_img = img.resize(
+                        (
+                            self.scaled_width,
+                            self.scaled_height,
+                        ),Image.ANTIALIAS)
 
-            scaled_img.save(self.scaled_filepath)
+                scaled_img.save(self.scaled_filepath)
+        else:
+            self.scaled_height = self.height
+            self.scaled_width = self.width
 
-        self.scaled_height = scaled_img.height
-        self.scaled_width = scaled_img.width
+            if not isfile(self.scaled_filepath):
+                copyfile(self.filepath,self.scaled_filepath)
+
+
 
 
 class Article(object):
@@ -181,7 +189,7 @@ class Article(object):
         self.header_img()
 
 
-    def excerpt(self):
+    def compile_excerpt(self):
         'Generate an image-free excerpt'
         excerpt = unicode()
         content = BeautifulSoup(self.body,'html.parser')

@@ -1,3 +1,4 @@
+{# used as preview and actual article #}
 <article>
     <header>
         <h2><a href="{{article.url}}">{{article.title}}</a></h2>
@@ -8,8 +9,12 @@
         {% endif %}
     </header>
     <div class="article-content">
-        {{article.excerpt()}}
-        <a href="{{article.url}}">Read more...</a>
+        {% if articles %}
+            {{article.compile_excerpt()}}
+            {% if article.full %} <a href="{{article.url}}">Read more...</a> {% endif %}
+        {% else %}
+            {{article.compile_body()}}
+        {% endif %}
     </div>
     <footer>
         <img class="author-thumb" width="40" height="40" src="{{profiles[article.username].avatar.scaled_url}}" alt="{{profiles[article.username].name}}" />
