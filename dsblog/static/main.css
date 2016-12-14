@@ -71,7 +71,6 @@ article >  footer {
 }
 
 article .post-image {
-    opacity:0.6;
     outline:1px solid #eee;
     width:710px;
     height:100px;
