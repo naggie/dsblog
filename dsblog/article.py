@@ -21,6 +21,33 @@ config = getConfig()
 
 # TODO embed some from the URL in the filename
 
+def remove_side_shadows(img):
+    'remove the left and right drop shadows from an image, if grayscale'
+    w,h = img.width,img.height
+    max_clip = int(w/7)
+    sample_height = int(h/10)
+
+    y1 = int(h/2) - int(sample_height/2)
+    y2 = int(h/2) + int(sample_height/2)
+
+    # left
+    # check for identical pixels in a column, stop when they change
+    for left in range(1,max_clip):
+        sample = img.crop((left,y1,left+1,y2)).convert('HSV')
+        data = sample.getdata()
+        # isn't grayscale
+        if data[0][1] > 4:
+            break
+
+        # doesn't look like a line or shadow
+        if len(set(data)) != 1:
+            break
+
+
+
+    return img.crop((left,0,w-left,h))
+
+
 def dedup_list(l):
     'preserves order and dedup'
     ulist = list()
@@ -218,7 +245,9 @@ class Article(object):
 
         if not isfile(header_filepath):
             log.info('generating article header from %s',article_image.original_url)
-            img = Image.open(article_image.filepath).resize((
+            img = Image.open(article_image.filepath)
+            img = remove_side_shadows(img)
+            img = img.resize((
                     config['max_article_img_width'],
                     int(article_image.height*config['max_article_img_width']/article_image.width)
                 ),Image.ANTIALIAS)
