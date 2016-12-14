@@ -18,3 +18,17 @@ class UserProfile():
     # default ordering
     def __cmp__(self, other):
         return other.article_count - self.article_count
+
+
+class AnonymousUserProfile(UserProfile):
+    def __init__(self):
+        self.username = 'anonymous'
+        self.name = 'Anonymous'
+        self.title = 'Generic User'
+        #self.avatar = ArticleImage()
+        self.bio = 'Nothing to see here, move along...'
+        self.website = None
+        self.avatar = None
+
+        self.article_count = 0
+

@@ -7,6 +7,7 @@ from shutil import copytree,rmtree
 import jinja2
 from os.path import join,isdir
 from datetime import datetime
+from collections import defaultdict
 
 # TODO count articles for user profiles with reducer function 
 
@@ -36,6 +37,7 @@ def main():
     # after config is loaded (sue me)
     from discourse import Discourse
     import feed
+    from user_profile import AnonymousUserProfile
 
     output_static_dir = join(config['output_dir'],'static')
 
@@ -45,8 +47,8 @@ def main():
     copytree(config['static_dir'],output_static_dir)
 
     articles = dict()
-    comments = dict()
-    profiles = dict()
+    comments = defaultdict(list)
+    profiles = defaultdict(AnonymousUserProfile)
 
     discourse = Discourse(
             api_user = config['api_user'],
@@ -59,6 +61,10 @@ def main():
 
     for article in discourse.articles:
         articles[article.url] = article
+
+    for comment in discourse.comments:
+        comments[comment.article_url].append(comment)
+        comment.process()
 
     for profile in discourse.user_profiles:
         profile.process()
@@ -97,6 +103,7 @@ def main():
             template.stream(
                 profiles=profiles,
                 article=article,
+                comments=sorted(comments[article.original_url]),
             ).dump(filepath)
 
 

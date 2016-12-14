@@ -1,16 +1,16 @@
 <div class="comments">
-    {% if article.comments|length == 1 %}
-    <h3>{{ article.comments|length }} comment</h3>
-    {% elif article.comments %}
-    <h3>{{ article.comments|length }} comments</h3>
+    {% if comments|length == 1 %}
+    <h3>{{ comments|length }} comment</h3>
+    {% elif comments %}
+    <h3>{{ comments|length }} comments</h3>
     {% endif %}
 
-    {% for comment in article.comments %}
+    {% for comment in comments %}
     <div class="comment">
-        <img class="author-thumb" src="{{comment.author_image}}" alt="{{comment.author_name}}" />
-        <a class="author-name" href="{{comment.author_url}}">{{comment.author_name}}</a>
+        <img class="author-thumb" src="{{profiles[comment.username].avatar.scaled_url}}" alt="{{profiles[comment.username].name}}" />
+        <a class="author-name" href="{{profiles[comment.username].website}}">{{profiles[comment.username].name}}</a>
         &nbsp; {# TODO better CSS and divs #}
-        {{comment.content}}
+        {{comment.compile_body()}}
     </div>
     {% endfor %}
 

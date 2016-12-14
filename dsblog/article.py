@@ -297,3 +297,7 @@ class Comment(Article):
             )
 
         self.article_url = article_url
+
+    # comments -- oldest first
+    def __cmp__(self,other):
+        return 1 if self.pubdate > other.pubdate else -1
