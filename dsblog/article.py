@@ -282,6 +282,9 @@ class Article(object):
 
     # sorting a list of articles will sort by reverse pubdate.
     def __cmp__(self,other):
+        if not isinstance(other,self.__class__):
+            return 0
+
         return 1 if self.pubdate < other.pubdate else -1
 
 
@@ -300,4 +303,7 @@ class Comment(Article):
 
     # comments -- oldest first
     def __cmp__(self,other):
+        if not isinstance(other,self.__class__):
+            return 0
+
         return 1 if self.pubdate > other.pubdate else -1

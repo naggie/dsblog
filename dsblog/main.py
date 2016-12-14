@@ -8,8 +8,7 @@ import jinja2
 from os.path import join,isdir
 from datetime import datetime
 from collections import defaultdict
-
-# TODO count articles for user profiles with reducer function 
+import yaml
 
 handler = colorlog.StreamHandler()
 handler.setFormatter(colorlog.ColoredFormatter('%(asctime)s  %(log_color)s%(levelname)s%(reset)s %(name)s: %(message)s'))
@@ -78,6 +77,14 @@ def main():
     for article in articles.values():
         profiles[article.username].article_count +=1
         article.process()
+
+
+    with open(config['database_file'],'w') as f:
+        yaml.dump({
+            'articles':articles,
+            'profiles':profiles,
+            'comments':comments,
+            },f)
 
 
     env = jinja2.Environment(

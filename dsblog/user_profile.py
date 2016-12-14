@@ -17,6 +17,9 @@ class UserProfile():
 
     # default ordering
     def __cmp__(self, other):
+        if not isinstance(other,self.__class__):
+            return 0
+
         return other.article_count - self.article_count
 
 

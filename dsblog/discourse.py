@@ -133,5 +133,5 @@ class Discourse():
             ))
 
     def publish(self,article):
-        "Lazily publish an article. Only publish if A) local cache doesn't contain article at revision and B) nor does discourse"
+        "Lazily publish/update an article. Only publish if A) local cache doesn't contain article at revision and B) nor does discourse"
         pass

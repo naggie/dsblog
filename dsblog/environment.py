@@ -47,6 +47,7 @@ def loadConfig(yml_filepath):
     config['header_img_dir'] = join(config['output_dir'],config['header_img_dir'])
     config['scaled_img_dir'] = join(config['output_dir'],config['scaled_img_dir'])
     config['original_img_dir'] = join(config['output_dir'],config['original_img_dir'])
+    config['database_file'] = join(config['output_dir'],config['database_file'])
 
 
 def makeDirs():
