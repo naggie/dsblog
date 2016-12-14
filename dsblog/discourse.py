@@ -107,6 +107,7 @@ class Discourse():
                     pubdate=parse_date(post['created_at']),
                     username=post['username'],
                 ))
+                self.usernames.add(post['username'])
 
 
             self.articles.append(Article(

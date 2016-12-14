@@ -110,7 +110,7 @@ def main():
     template = env.get_template('about.html')
     filepath = join(config['output_dir'],'about.html')
     template.stream(
-            profiles=sorted(profiles.values()),
+            profiles=sorted([p for p in profiles.values() if p.article_count]),
     ).dump(filepath)
 
 if __name__ == "__main__":
