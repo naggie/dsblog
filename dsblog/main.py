@@ -9,12 +9,20 @@ from os.path import join,isdir
 from datetime import datetime
 from collections import defaultdict
 import yaml
+from iso8601 import parse_date
 
 handler = colorlog.StreamHandler()
 handler.setFormatter(colorlog.ColoredFormatter('%(asctime)s  %(log_color)s%(levelname)s%(reset)s %(name)s: %(message)s'))
 logger = colorlog.getLogger()
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
+
+
+# TODO separate out database glue
+
+# PYYAML bug -- cannot roundtrip datetime with TZ http://pyyaml.org/ticket/202
+# https://stackoverflow.com/questions/13294186/can-pyyaml-parse-iso8601-dates
+yaml.add_constructor(u'tag:yaml.org,2002:timestamp', lambda loader,node: parse_date(node.value))
 
 # reduce spam
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -45,9 +53,22 @@ def main():
 
     copytree(config['static_dir'],output_static_dir)
 
-    articles = dict()
-    comments = defaultdict(list)
-    profiles = defaultdict(AnonymousUserProfile)
+    try:
+        with open(config['database_file']) as f:
+            database = yaml.load(f)
+            articles = database['articles']
+            comments = database['comments']
+            profiles = database['profiles']
+    except IOError:
+        articles = dict()
+        comments = defaultdict(list)
+        profiles = defaultdict(AnonymousUserProfile)
+        database = {
+            'articles':articles,
+            'profiles':profiles,
+            'comments':comments,
+        }
+
 
     discourse = Discourse(
             api_user = config['api_user'],
@@ -78,14 +99,8 @@ def main():
         profiles[article.username].article_count +=1
         article.process()
 
-
     with open(config['database_file'],'w') as f:
-        yaml.dump({
-            'articles':articles,
-            'profiles':profiles,
-            'comments':comments,
-            },f)
-
+        yaml.dump(database,f)
 
     env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(config['template_dir']),
