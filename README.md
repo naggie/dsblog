@@ -9,7 +9,7 @@ To run:
 
 ```
 pip install git+https://github.com/naggie/dsblog.git
-python ./dsblog/main.py config.example.yml build/
+dsblog config.example.yml
 ```
 
 You'll find the website in `output_dir`. The build output is idempotent and stateful
