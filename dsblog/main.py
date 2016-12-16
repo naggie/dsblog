@@ -6,6 +6,7 @@ import colorlog
 from shutil import copytree,rmtree
 import jinja2
 from os.path import join,isdir
+from os import mkdir
 from datetime import datetime
 
 handler = colorlog.StreamHandler()
@@ -89,7 +90,12 @@ def main():
     template = env.get_template('article_page.html')
     for article in database.get_article_list():
         if article.full:
-            filepath = join(config['output_dir'],article.url)
+            directory = join(config['output_dir'],article.url)
+
+            if not isdir(directory):
+                mkdir(directory)
+
+            filepath = join(directory,'index.html')
             template.stream(
                 profiles=database.get_profile_dict(),
                 article=article,
