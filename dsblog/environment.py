@@ -24,6 +24,9 @@ defaults = {
     "database_file": "database.yml",
 
     "static_dir": join(script_dir,'static'),
+
+    "copyright_msg": None,
+    "extra_links": [],
 }
 
 config = dict()

@@ -43,9 +43,10 @@ def main():
     database = Database()
 
     discourse = Discourse(
-            api_user = config['api_user'],
-            api_key = config['api_key'],
-            url = config['url'],
+            api_user = config['discourse_api_user'],
+            api_key = config['discourse_api_key'],
+            url = config['discourse_url'],
+            category = config['discourse_category'],
             extra_usernames = [k['username'] for k in config['feed_import']],
         )
 
@@ -67,6 +68,13 @@ def main():
 
     # TODO footer/header/description/logo from comment here
     env.globals["compile_date"] = datetime.now()
+    env.globals["site_name"] = config["site_name"]
+    env.globals["base_url"] = config["base_url"]
+    env.globals["description"] = config["site_description"]
+    env.globals["extra_links"] = config["extra_links"]
+    env.globals["copyright_msg"] = config["copyright_msg"]
+    env.globals["copyright_from"] = config["copyright_from"]
+    env.globals["footer_msg"] = config["footer_msg"]
 
 
     template = env.get_template('blog.html')

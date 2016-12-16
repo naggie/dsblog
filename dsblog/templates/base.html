@@ -1,25 +1,18 @@
 <!DOCTYPE html>
 <!-- Want to join us? Email root at this domain -->
-{# http://jinja.pocoo.org/docs/dev/tricks/ -#}
 {% set nav_links = [
     ('Blog','.'),
     ('About','about.html'),
-    ('Forum','https://boards.darksky.io/'),
-    ('Chat','https://chat.darksky.io/'),
 ] -%}
-{% set base_url = "https://darksky.io/" -%}
+{# TODO automatically process logo (aspect ratio, size limits) -#}
 {% set logo_url = "/static/darksky-light-bg.svg" -%}
+{# TODO: this! -#}
 {# Override per article -#}
-{% set site_name = site_name|default("Darksky blog") -%}
-{% set title = title|default(site_name) -%}
 {% set image_url = image_url|default(logo_url) -%}
-{% set description = description|default("Darksky.io is an Electronics, Electrical and
-Software consultancy based in the UK. It is also an invite-only discussion community, founded in 2010.") -%}
-
 <html>
     <head>
     {% block head %}
-        <title>{{title}}</title>
+        <title>{{site_name}}</title>
         <meta name="description" content="{{description|striptags}}">
 
 
@@ -33,13 +26,13 @@ Software consultancy based in the UK. It is also an invite-only discussion commu
 
         <meta property="og:site_name" content="{{site_name}}" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="{{title}}" />
+        <meta property="og:title" content="{{site_name}}" />
         <meta property="og:description" content="{{description|striptags}}" />
         <meta property="og:url" content="{{base_url}}" />
         <meta property="og:image" content="{{base_url}}{{image_url}}" />
 
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="{{title}}" />
+        <meta name="twitter:title" content="{{site_name}}" />
         <meta name="twitter:description" content="{{description|striptags}}" />
         <meta name="twitter:url" content="{{base_url}}" />
         <meta name="twitter:image:src" content="{{base_url}}{{image_url}}" />
@@ -97,10 +90,10 @@ Software consultancy based in the UK. It is also an invite-only discussion commu
         <nav>
             {% block nav %}
             <a href=".">
-                <img alt="Darksky logo" height="200" width="316" src="static/darksky-light-bg.svg" />
+                <img alt="logo" height="200" width="316" src="{{logo_url}}" />
             </a>
             <br />
-            {% for name,url in nav_links %}
+            {% for name,url in nav_links + extra_links %}
             <a{% if name == selected_link %} class="selected"{% endif%} href="{{url}}">{{name}}</a>
             {% endfor %}
             {% endblock nav %}
@@ -109,12 +102,14 @@ Software consultancy based in the UK. It is also an invite-only discussion commu
             {% block content %}
             {% endblock content %}
             <div class="about-text">
+                {% if copyright_msg %}
                 <p>
-                    Copyright &copy; 2010-{{compile_date.strftime('%Y')}} Darksky.io Limited.
-                    All Rights Reserved.
+                    Copyright &copy; {{copyright_from}}-{{compile_date.strftime('%Y')}} {{copyright_msg}}
+                    <br />
+                    {{footer_msg}}
                 </p>
+                {% endif %}
                 <p>
-                    Company Registered in England &amp; Wales. Company No. 10044342.<br />
                     Powered by <a href="https://github.com/naggie/dsblog">dsblog.</a>
                 </p>
             </div>

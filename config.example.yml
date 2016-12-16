@@ -1,7 +1,27 @@
-url: "https://boards.darksky.io"
-api_user: naggie
-api_key: <redatacted>
-category: blog
+site_name: Darksky blog
+base_url: https://darksky.io/
+
+description: >
+  Darksky.io is an Electronics, Electrical and Software consultancy based in
+  the UK. It is also an invite-only discussion community, founded in 2010.
+
+extra_links:
+  - ["Forum","https://boards.darksky.io/"]
+  - ["Chat","https://chat.darksky.io/"]
+
+copyright_msg: >
+  Darksky.io Limited unless otherwise noted. All rights reserved.
+
+copyright_from: 2010
+
+footer_msg: >
+  Company Registered in England &amp; Wales. Company No. 10044342.
+
+discourse_url: "https://boards.darksky.io"
+discourse_api_user: naggie
+discourse_api_key: <lolno>
+discourse_category: blog
+
 output_dir: /srv/http/darksky.io/public/blog
 # articles by discourse users from external websites
 # will be written to discourse for discussion
@@ -13,5 +33,4 @@ feed_import:
     username: naggie
 
   - url: "https://frillip.com/rss/"
-    username: frill
-
+    username: frillip
