@@ -7,9 +7,6 @@ from shutil import copytree,rmtree
 import jinja2
 from os.path import join,isdir
 from datetime import datetime
-from collections import defaultdict
-import yaml
-from iso8601 import parse_date
 
 handler = colorlog.StreamHandler()
 handler.setFormatter(colorlog.ColoredFormatter('%(asctime)s  %(log_color)s%(levelname)s%(reset)s %(name)s: %(message)s'))
@@ -17,18 +14,8 @@ logger = colorlog.getLogger()
 logger.setLevel(logging.INFO)
 logger.addHandler(handler)
 
-
-# TODO separate out database glue
-
-# PYYAML bug -- cannot roundtrip datetime with TZ http://pyyaml.org/ticket/202
-# https://stackoverflow.com/questions/13294186/can-pyyaml-parse-iso8601-dates
-yaml.add_constructor(u'tag:yaml.org,2002:timestamp', lambda loader,node: parse_date(node.value))
-
 # reduce spam
 logging.getLogger("requests").setLevel(logging.WARNING)
-
-def init(config):
-    copytree(os.path.join(script_dir,'static'),config['build_dir'])
 
 def main():
     if len(sys.argv) != 2:
@@ -44,7 +31,7 @@ def main():
     # after config is loaded (sue me)
     from discourse import Discourse
     import feed
-    from user_profile import AnonymousUserProfile
+    from database import Database
 
     output_static_dir = join(config['output_dir'],'static')
 
@@ -53,22 +40,7 @@ def main():
 
     copytree(config['static_dir'],output_static_dir)
 
-    try:
-        with open(config['database_file']) as f:
-            database = yaml.load(f)
-            articles = database['articles']
-            comments = database['comments']
-            profiles = database['profiles']
-    except IOError:
-        articles = dict()
-        comments = defaultdict(list)
-        profiles = defaultdict(AnonymousUserProfile)
-        database = {
-            'articles':articles,
-            'profiles':profiles,
-            'comments':comments,
-        }
-
+    database = Database()
 
     discourse = Discourse(
             api_user = config['api_user'],
@@ -78,61 +50,49 @@ def main():
         )
 
     discourse.crawl()
+    database.assert_articles(discourse.articles)
+    database.assert_profiles(discourse.user_profiles)
+    database.assert_comments(discourse.comments)
 
-    for article in discourse.articles:
-        articles[article.url] = article
-
-    for comment in discourse.comments:
-        comments[comment.article_url].append(comment)
-        comment.process()
-
-    for profile in discourse.user_profiles:
-        profile.process()
-        profiles[profile.username] = profile
 
     for kwargs in config['feed_import']:
-        for article in feed.crawl(**kwargs):
-            articles[article.url] = article
+        database.assert_articles( feed.crawl(**kwargs) )
 
+    database.save()
 
-    for article in articles.values():
-        profiles[article.username].article_count +=1
-        article.process()
-
-    with open(config['database_file'],'w') as f:
-        yaml.dump(database,f)
 
     env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(config['template_dir']),
         )
 
+    # TODO footer/header/description/logo from comment here
     env.globals["compile_date"] = datetime.now()
 
 
     template = env.get_template('blog.html')
     filepath = join(config['output_dir'],'index.html')
     template.stream(
-            articles=sorted(articles.values()),
-            profiles=profiles,
+            articles=database.get_article_list(),
+            profiles=database.get_profile_dict(),
             #prefetch=[articles[0].url],
             #prerender=articles[0].url,
     ).dump(filepath)
 
     template = env.get_template('article_page.html')
-    for article in articles.values():
+    for article in database.get_article_list():
         if article.full:
             filepath = join(config['output_dir'],article.url)
             template.stream(
-                profiles=profiles,
+                profiles=database.get_profile_dict(),
                 article=article,
-                comments=sorted(comments[article.original_url]),
+                comments=database.get_comment_list(article),
             ).dump(filepath)
 
 
     template = env.get_template('about.html')
     filepath = join(config['output_dir'],'about.html')
     template.stream(
-            profiles=sorted([p for p in profiles.values() if p.article_count]),
+            profiles=database.get_profile_list(publishers_only=True),
     ).dump(filepath)
 
 if __name__ == "__main__":

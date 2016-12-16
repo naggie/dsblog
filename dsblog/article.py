@@ -132,7 +132,8 @@ class ArticleImage(object):
 
 
 class Article(object):
-    def __init__(self,body,username,url,pubdate,title='',full=True,guid=None):
+    # unique by article_url
+    def __init__(self,body,username,url,pubdate,title='',full=True):
         'Requires fully qualified image URLs and links. URL must also be fully qualified.'
         self.body = body # original, always
         self.title = title
@@ -289,6 +290,7 @@ class Article(object):
 
 
 class Comment(Article):
+    #'unique by article_url+pubdate'
     def __init__(self,body,username,article_url,pubdate):
 
         super(Comment,self).__init__(
