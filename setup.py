@@ -18,7 +18,7 @@ with open(path.join(script_dir,'requirements.txt')) as f:
 
 setup(
     name = "dsblog",
-    version = "2.3",
+    version = "2.4",
     packages = find_packages(),
     dependency_links=links,
     #scripts = ['dsblog/dsblog.py'],
