@@ -143,7 +143,7 @@ class Article(object):
         self.pubdate = pubdate
         self.full = full
 
-        self.slug = re.sub(r'[^0-9a-zA-Z]+','-',title).lower()+'-'+sha256().hexdigest()[:6]
+        self.slug = re.sub(r'[^0-9a-zA-Z]+','-',title).lower()+'-'+sha256(title).hexdigest()[:6]
 
         self.url = '%s/' % self.slug
         #self.url = '%s.html' % self.slug
