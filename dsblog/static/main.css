@@ -40,7 +40,7 @@ nav a.selected {
 }
 
 #content {
-    width: 710px;
+    width: 712px;
     margin:auto;
     overflow-x:hidden;
 }
@@ -71,7 +71,7 @@ article >  footer {
 }
 
 article .post-image {
-    outline:1px solid #eee;
+    border:1px solid #eee;
     width:710px;
     height:100px;
     margin:15px 0;
