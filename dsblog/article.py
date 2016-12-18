@@ -147,6 +147,7 @@ class Article(object):
 
         self.url = '%s/' % self.slug
         #self.url = '%s.html' % self.slug
+        self.full_url = join(config['base_url'],self.url)
 
         self.revision = revision or hash(title+body)
 

@@ -13,13 +13,18 @@ from hashlib import sha256
 
 config = getConfig()
 
-# TODO publish articles (idempotent)
 
 article_notice = u"""
-**This article has been imported from dsblog running on {site_name} discussion. Any comments you leave here will appear on the {site_name}.**
-----
+> This article has been imported from dsblog running on {site_name} discussion.
+> Any comments you leave here will appear on the {site_name}.
+> {full_url}
+
+----------
+
 {article}
-----
+
+----------
+
 ```
 {header}#canary: {canary}
 ```
@@ -214,14 +219,17 @@ class Discourse():
         # TODO if there are problems -- excerpt will do.
         body = article_notice.format(
                 site_name=config['site_name'],
+                full_url=article.full_url,
                 header=header,
                 canary=canary,
                 article=article.body,
             )
 
         # necessary hacks for proper display
-        body = body.replace('<code>','\n```\n')
-        body = body.replace('</code>','\n```\n')
+        body = body.replace('<pre><code>','\n```\n')
+        body = body.replace('</pre></code>','\n```\n')
+        body = body.replace('<code>','`')
+        body = body.replace('</code>','`')
 
         # already here?
         for existing in self.articles:

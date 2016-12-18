@@ -61,7 +61,7 @@ def main():
         database.assert_articles( feed.crawl(**kwargs) )
 
     if config['import_to_discourse']:
-        for article in database.get_article_list():
+        for article in sorted(database.get_article_list(),reverse=True):
             discourse.publish(article)
 
     database.save()
