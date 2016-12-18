@@ -15,9 +15,14 @@ config = getConfig()
 
 # TODO publish articles (idempotent)
 
-article_notice = """**This article has been imported from dsblog running on {site_name}
+article_notice = u"""**This article has been imported from dsblog running on {site_name}
 discussion. Any comments you leave here will appear on the {site_name}.**
-""".format(**config)
+```
+{header}#canary: {canary}
+```
+----
+{article}
+"""
 
 log = logging.getLogger(__name__)
 
@@ -204,7 +209,12 @@ class Discourse():
         # article body with get_meta
         # from raw body -- discourse will deal with the sanitisation.
         # TODO if there are problems -- excerpt will do.
-        body = u"{0}\n```\n{1}#canary: {2}\n```\n----\n{3}".format(article_notice,header,canary,article.body)
+        body = article_notice.format(
+                site_name=config['site_name'],
+                header=header,
+                canary=canary,
+                article=article.body,
+            )
 
         # already here?
         for existing in self.articles:
