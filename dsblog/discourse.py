@@ -15,13 +15,14 @@ config = getConfig()
 
 # TODO publish articles (idempotent)
 
-article_notice = u"""**This article has been imported from dsblog running on {site_name}
-discussion. Any comments you leave here will appear on the {site_name}.**
+article_notice = u"""
+**This article has been imported from dsblog running on {site_name} discussion. Any comments you leave here will appear on the {site_name}.**
+----
+{article}
+----
 ```
 {header}#canary: {canary}
 ```
-----
-{article}
 """
 
 log = logging.getLogger(__name__)
@@ -218,8 +219,8 @@ class Discourse():
             )
 
         # necessary hacks for proper display
-        body.replace('<code>','\n```\n')
-        body.replace('</code>','\n```\n')
+        body = body.replace('<code>','\n```\n')
+        body = body.replace('</code>','\n```\n')
 
         # already here?
         for existing in self.articles:
@@ -243,7 +244,7 @@ class Discourse():
         log.info('Publishing %s to discourse',article.original_url)
 
         self.post('posts',
-            title='{0} -- {1}'.format(article.title,article.pubdate.strftime('%b/%d/%Y')),
+            title='{0} - {1}'.format(article.title,article.pubdate.strftime('%d/%m/%Y')),
             raw=body,
             category=self.category,
             )
