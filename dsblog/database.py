@@ -3,11 +3,13 @@ from iso8601 import parse_date
 from user_profile import AnonymousUserProfile
 from collections import defaultdict
 from environment import getConfig
+import logging
 
 # PYYAML bug -- cannot roundtrip datetime with TZ http://pyyaml.org/ticket/202
 # https://stackoverflow.com/questions/13294186/can-pyyaml-parse-iso8601-dates
 yaml.add_constructor(u'tag:yaml.org,2002:timestamp', lambda loader,node: parse_date(node.value))
 
+log = logging.getLogger(__name__)
 config = getConfig()
 
 
@@ -42,9 +44,11 @@ class Database(object):
             try:
                 existing = self.articles[article.original_url]
                 if article.revision != existing.revision:
+                    log.info('Article updated:  %s',article.original_url)
                     article.process()
                     self.articles[article.original_url] = article
             except KeyError:
+                log.info('New article: %s',article.original_url)
                 article.process()
                 self.articles[article.original_url] = article
 
