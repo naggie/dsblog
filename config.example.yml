@@ -22,6 +22,7 @@ discourse_url: "https://boards.darksky.io"
 discourse_api_user: naggie
 discourse_api_key: <lolno>
 discourse_category: blog
+import_to_discourse: True
 
 output_dir: /srv/http/darksky.io/public/blog
 # articles by discourse users from external websites

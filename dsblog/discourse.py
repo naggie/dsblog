@@ -8,6 +8,7 @@ from article import Article,Comment
 from user_profile import UserProfile
 from environment import getConfig
 from database import yaml
+from hashlib import sha256
 
 
 config = getConfig()
@@ -46,7 +47,9 @@ class Discourse():
 
         self.usernames = set(extra_usernames)
 
-    def get(self,*path):
+        self.crawled = False
+
+    def get(self,*path,**params):
         'get an API URL where list path is transformed into a JSON request and parsed'
 
         path = [str(p) for p in path]
@@ -54,12 +57,14 @@ class Discourse():
         parts = [self.url] + path
         url = '/'.join(parts) + '.json'
 
+        params.update({
+            'api_user':self.api_user,
+            'api_key':self.api_key,
+        })
+
         response = requests.get(
                 url,
-                params={
-                    'api_user':self.api_user,
-                    'api_key':self.api_key,
-                }
+                params=params,
         )
         response.raise_for_status()
 
@@ -89,6 +94,7 @@ class Discourse():
         return content.prettify(formatter="html")
 
     def crawl(self):
+        # TODO support more_posts for result pagination so articles are not missed
         # find cetegory ID
         for cat in self.get('categories')['category_list']['categories']:
             id = cat['id']
@@ -135,6 +141,9 @@ class Discourse():
             # override as meta header knows best!
             kwargs.update(meta)
 
+            if 'canary' in kwargs:
+                del kwargs['canary']
+
             self.articles.append(Article(**kwargs))
 
             for post in topic['post_stream']['posts'][1:]:
@@ -160,21 +169,30 @@ class Discourse():
                     #attributes={}, # links to twitter, linkedin, etc
             ))
 
+        self.crawled = True
+
     def publish(self,article):
         "Lazily publish/update an article. Only publish if A) local cache doesn't contain article at revision and B) nor does discourse"
         # TODO support updating
+
+        if not self.crawled:
+            raise RuntimeError('crawl() before publish()')
+
+        # used to check if article has been posted already with something that
+        # can roundtrip the discourse search
+        canary = sha256(article.original_url+'canary').hexdigest()
 
         header = yaml.dump({
             'url':article.original_url,
             'revision':article.revision,
             'pubdate':article.pubdate,
             'username':article.username,
+            'canary':canary,
         },default_flow_style=False)
 
         # will end up in pre/code tags so that this can be parsed from the
         # article body with get_meta
-        body = u"```\n{0}\n```{1}".format(header,article.body)
-
+        body = u"```\n{0}{1}\n```{2}".format(article_notice,header,article.body)
 
         # already here?
         for existing in self.articles:
@@ -184,9 +202,17 @@ class Discourse():
         # from discourse in the first place (should have already been caught --
         # failsafe)
         if article.original_url.startswith(self.url):
+            log.warn("Article %s discovered with prefix detection which means it wasn't in the category list on the API call.",article.original_url)
+            return
+
+        # look for a post containing the article original URL
+        posts = self.get('search',q=canary)['posts']
+
+        if len(posts):
+            log.warn("Article %s discovered with canary detection which means it wasn't in the category list on the API call.",article.original_url)
             return
 
 
-        #print body
+        print body
         # publish
 
