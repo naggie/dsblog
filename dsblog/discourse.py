@@ -32,7 +32,7 @@ def get_meta(html):
     'parse yaml from first HTML code block'
     content = BeautifulSoup(html,'html.parser')
 
-    raw = content.find_all('code')
+    raw = content.find('code')
 
     if not raw:
         return {}
@@ -95,16 +95,16 @@ class Discourse():
         content = BeautifulSoup(html,'html.parser')
         # repair all protocol-less URLS
         for img in content.find_all('img'):
-            if img['src'].startswith('//'):
+            if img.get('src') and img['src'].startswith('//'):
                 img['src'] = self.url.split('//')[0] + img['src']
 
         # repair all domain-less
         for img in content.find_all('img'):
-            if img['src'].startswith('/'):
+            if img.get('src') and img['src'].startswith('/'):
                 img['src'] = self.url + img['src']
 
         for a in content.find_all('a'):
-            if a['href'].startswith('//'):
+            if a.get('href') and a['href'].startswith('//'):
                 a['href'] = self.url.split('//')[0] + a['href']
 
         # remove useless meta links (a discourse-ism)
@@ -136,7 +136,6 @@ class Discourse():
             topic = self.get('t',id)
             first_post = topic['post_stream']['posts'][0]
 
-            self.usernames.add(first_post['username'])
 
             # don't want any category definition posts
             if topic['title'].startswith('About the %s category' % self.category):
@@ -161,6 +160,8 @@ class Discourse():
             # override as meta header knows best!
             kwargs.update(meta)
 
+            self.usernames.add(kwargs['username'])
+
             self.articles.append(Article(**kwargs))
 
             for post in topic['post_stream']['posts'][1:]:
@@ -181,7 +182,7 @@ class Discourse():
                     title=p["title"],
                     avatar=self.url+p["avatar_template"].format(size=200),
                     bio=p["bio_cooked"],
-                    website=p["website"],
+                    website=p.get("website"),
                     #invited_by=p["invited_by"]["username"] if p.get("invited_by") else None,
                     #attributes={}, # links to twitter, linkedin, etc
             ))
