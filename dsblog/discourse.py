@@ -51,11 +51,7 @@ class Discourse():
 
     def get(self,*path,**params):
         'get an API URL where list path is transformed into a JSON request and parsed'
-
-        path = [str(p) for p in path]
-
-        parts = [self.url] + path
-        url = '/'.join(parts) + '.json'
+        parts = [self.url] + [str(p) for p in path]
 
         params.update({
             'api_user':self.api_user,
@@ -63,13 +59,31 @@ class Discourse():
         })
 
         response = requests.get(
-                url,
+                url = '/'.join(parts) + '.json',
                 params=params,
         )
         response.raise_for_status()
 
         return response.json()
 
+
+    def post(self,*path,**data):
+        'Post some data'
+        return
+        parts = [self.url] + [str(p) for p in path]
+
+        data.update({
+            'api_user':self.api_user,
+            'api_key':self.api_key,
+        })
+
+        response = requests.get(
+                url='/'.join(parts),
+                data=data,
+        )
+        response.raise_for_status()
+
+        return response.json()
 
     def normalise_html(self,html):
         content = BeautifulSoup(html,'html.parser')
@@ -188,6 +202,8 @@ class Discourse():
 
         # will end up in pre/code tags so that this can be parsed from the
         # article body with get_meta
+        # from raw body -- discourse will deal with the sanitisation.
+        # TODO if there are problems -- excerpt will do.
         body = u"```\n{0}{1}#canary: {2}\n```{3}".format(article_notice,header,canary,article.body)
 
         # already here?
@@ -209,4 +225,12 @@ class Discourse():
             return
 
         # publish, it's not there!
+
+        log.info('Publishing %s to discourse',article.original_url)
+
+        self.post('posts',
+            title=article.title,
+            raw=body,
+            category=self.category,
+            )
 
