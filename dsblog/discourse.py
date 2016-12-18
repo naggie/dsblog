@@ -15,8 +15,8 @@ config = getConfig()
 
 # TODO publish articles (idempotent)
 
-article_notice = """# This article has been imported from dsblog running on {site_name} for
-# discussion. Any comments you leave here will appear on the {site_name} blog.
+article_notice = """**This article has been imported from dsblog running on {site_name}
+discussion. Any comments you leave here will appear on the {site_name}.**
 """.format(**config)
 
 log = logging.getLogger(__name__)
@@ -69,7 +69,6 @@ class Discourse():
 
     def post(self,*path,**data):
         'Post some data'
-        return
         parts = [self.url] + [str(p) for p in path]
 
         data.update({
@@ -77,13 +76,14 @@ class Discourse():
             'api_key':self.api_key,
         })
 
-        response = requests.get(
+        response = requests.post(
                 url='/'.join(parts),
                 data=data,
         )
         response.raise_for_status()
 
         return response.json()
+
 
     def normalise_html(self,html):
         content = BeautifulSoup(html,'html.parser')
@@ -204,7 +204,7 @@ class Discourse():
         # article body with get_meta
         # from raw body -- discourse will deal with the sanitisation.
         # TODO if there are problems -- excerpt will do.
-        body = u"```\n{0}{1}#canary: {2}\n```{3}".format(article_notice,header,canary,article.body)
+        body = u"{0}\n```\n{1}#canary: {2}\n```\n----\n{3}".format(article_notice,header,canary,article.body)
 
         # already here?
         for existing in self.articles:
