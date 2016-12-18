@@ -27,6 +27,8 @@ defaults = {
 
     "copyright_msg": None,
     "extra_links": [],
+    "import_to_discourse": False,
+    "strapline": None,
 }
 
 config = dict()
