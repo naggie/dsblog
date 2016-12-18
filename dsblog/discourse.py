@@ -203,6 +203,7 @@ class Discourse():
             'revision':article.revision,
             'pubdate':article.pubdate,
             'username':article.username,
+            'title':article.title,
         },default_flow_style=False)
 
         # will end up in pre/code tags so that this can be parsed from the
@@ -215,6 +216,10 @@ class Discourse():
                 canary=canary,
                 article=article.body,
             )
+
+        # necessary hacks for proper display
+        body.replace('<code>','\n```\n')
+        body.replace('</code>','\n```\n')
 
         # already here?
         for existing in self.articles:
@@ -235,11 +240,10 @@ class Discourse():
             return
 
         # publish, it's not there!
-
         log.info('Publishing %s to discourse',article.original_url)
 
         self.post('posts',
-            title=article.title,
+            title='{0} -- {1}'.format(article.title,article.pubdate.strftime('%b/%d/%Y')),
             raw=body,
             category=self.category,
             )
