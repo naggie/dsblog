@@ -168,7 +168,7 @@ class Discourse():
             'revision':article.revision,
             'pubdate':article.pubdate,
             'username':article.username,
-        })
+        },default_flow_style=False)
 
         # will end up in pre/code tags so that this can be parsed from the
         # article body with get_meta
