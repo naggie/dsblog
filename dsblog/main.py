@@ -60,6 +60,9 @@ def main():
     for kwargs in config['feed_import']:
         database.assert_articles( feed.crawl(**kwargs) )
 
+    for article in database.get_article_list():
+        discourse.publish(article)
+
     database.save()
 
 
@@ -67,7 +70,7 @@ def main():
             loader=jinja2.FileSystemLoader(config['template_dir']),
         )
 
-    # TODO footer/header/description/logo from comment here
+    # TODO move to environment.py?
     env.globals["compile_date"] = datetime.now()
     env.globals["site_name"] = config["site_name"]
     env.globals["base_url"] = config["base_url"]

@@ -7,18 +7,31 @@ import logging
 from article import Article,Comment
 from user_profile import UserProfile
 from environment import getConfig
+from database import yaml
+
 
 config = getConfig()
 
-# TODO read article header
-# TODO publish articles
-# TODO write article header
+# TODO publish articles (idempotent)
 
 article_notice = """# This article has been imported from dsblog running on {site_name} for
 # discussion. Any comments you leave here will appear on the {site_name} blog.
 """.format(**config)
 
 log = logging.getLogger(__name__)
+
+
+def get_meta(html):
+    'parse yaml from first HTML code block'
+    content = BeautifulSoup(html,'html.parser')
+
+    raw = content.find_all('code')
+
+    if not raw:
+        return {}
+
+    return yaml.load(raw.string)
+
 
 class Discourse():
     def __init__(self,url,api_user,api_key,category="Blog",extra_usernames=[]):
@@ -109,17 +122,20 @@ class Discourse():
 
             # perhaps this article was imported from elsewhere by this class in
             # the past.
-            meta = {}
-            article_url = meta.get('article_url',article_url)
+            meta = get_meta(content)
 
-            self.articles.append(Article(
-                title=topic['title'],
-                url=article_url,
-                revision=meta.get('revision'),
-                body=content,
-                username=first_post['username'],
-                pubdate=parse_date(first_post['created_at']),
-            ))
+            kwargs = {
+                'title':topic['title'],
+                'url':article_url,
+                'body':content,
+                'username':first_post['username'],
+                'pubdate':parse_date(first_post['created_at']),
+            }
+
+            # override as meta header knows best!
+            kwargs.update(meta)
+
+            self.articles.append(Article(**kwargs))
 
             for post in topic['post_stream']['posts'][1:]:
                 self.comments.append(Comment(
@@ -146,4 +162,20 @@ class Discourse():
 
     def publish(self,article):
         "Lazily publish/update an article. Only publish if A) local cache doesn't contain article at revision and B) nor does discourse"
-        pass
+
+        header = yaml.dump({
+            'url':article.original_url,
+            'revision':article.revision,
+            'pubdate':article.pubdate,
+            'username':article.username,
+        })
+
+        # will end up in pre/code tags so that this can be parsed from the
+        # article body with get_meta
+        body = u"```\n{0}\n```{1}".format(header,article.body)
+
+        # already here?
+
+        #print body
+        # publish
+
