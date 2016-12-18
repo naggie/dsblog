@@ -6,10 +6,17 @@ from bs4 import BeautifulSoup
 import logging
 from article import Article,Comment
 from user_profile import UserProfile
+from environment import getConfig
+
+config = getConfig()
 
 # TODO read article header
 # TODO publish articles
 # TODO write article header
+
+article_notice = """# This article has been imported from dsblog running on {site_name} for
+# discussion. Any comments you leave here will appear on the {site_name} blog.
+""".format(**config)
 
 log = logging.getLogger(__name__)
 
@@ -100,6 +107,20 @@ class Discourse():
 
             article_url='/'.join([self.url,'t',topic['slug'],str(id)])
 
+            # perhaps this article was imported from elsewhere by this class in
+            # the past.
+            meta = {}
+            article_url = meta.get('article_url',article_url)
+
+            self.articles.append(Article(
+                title=topic['title'],
+                url=article_url,
+                revision=meta.get('revision'),
+                body=content,
+                username=first_post['username'],
+                pubdate=parse_date(first_post['created_at']),
+            ))
+
             for post in topic['post_stream']['posts'][1:]:
                 self.comments.append(Comment(
                     body=self.normalise_html(post['cooked']),
@@ -108,15 +129,6 @@ class Discourse():
                     username=post['username'],
                 ))
                 self.usernames.add(post['username'])
-
-
-            self.articles.append(Article(
-                title=topic['title'],
-                url=article_url,
-                body=content,
-                username=first_post['username'],
-                pubdate=parse_date(first_post['created_at']),
-            ))
 
         # get user profiles (cannot list emails)
         for username in self.usernames:

@@ -76,6 +76,7 @@ def main():
     env.globals["copyright_msg"] = config["copyright_msg"]
     env.globals["copyright_from"] = config["copyright_from"]
     env.globals["footer_msg"] = config["footer_msg"]
+    env.globals["strapline"] = config["strapline"]
 
 
     template = env.get_template('blog.html')

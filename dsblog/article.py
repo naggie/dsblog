@@ -133,7 +133,7 @@ class ArticleImage(object):
 
 class Article(object):
     # unique by article_url
-    def __init__(self,body,username,url,pubdate,title='',full=True):
+    def __init__(self,body,username,url,pubdate,title='',full=True,revision=None):
         'Requires fully qualified image URLs and links. URL must also be fully qualified.'
         self.body = body # original, always
         self.title = title
@@ -148,7 +148,7 @@ class Article(object):
         self.url = '%s/' % self.slug
         #self.url = '%s.html' % self.slug
 
-        self.revision = hash(title+body)
+        self.revision = revision or hash(title+body)
 
         # ORDERED list of ArticleImage objects.
         self.images = list()

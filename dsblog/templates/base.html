@@ -93,6 +93,7 @@
             <a href=".">
                 <img alt="logo" height="200" width="316" src="{{logo_url}}" />
             </a>
+            {% if strapline %}<h2>{{strapline}}</h2>{% endif %}
             <br />
             {% for name,url in nav_links + extra_links %}
             <a{% if name == selected_link %} class="selected"{% endif%} href="{{url}}">{{name}}</a>

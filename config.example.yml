@@ -1,4 +1,5 @@
 site_name: Darksky blog
+strapline:
 base_url: https://darksky.io/
 
 description: >
