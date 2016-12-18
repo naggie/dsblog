@@ -141,9 +141,6 @@ class Discourse():
             # override as meta header knows best!
             kwargs.update(meta)
 
-            if 'canary' in kwargs:
-                del kwargs['canary']
-
             self.articles.append(Article(**kwargs))
 
             for post in topic['post_stream']['posts'][1:]:
@@ -187,12 +184,11 @@ class Discourse():
             'revision':article.revision,
             'pubdate':article.pubdate,
             'username':article.username,
-            'canary':canary,
         },default_flow_style=False)
 
         # will end up in pre/code tags so that this can be parsed from the
         # article body with get_meta
-        body = u"```\n{0}{1}\n```{2}".format(article_notice,header,article.body)
+        body = u"```\n{0}{1}#canary: {2}\n```{3}".format(article_notice,header,canary,article.body)
 
         # already here?
         for existing in self.articles:
@@ -212,7 +208,5 @@ class Discourse():
             log.warn("Article %s discovered with canary detection which means it wasn't in the category list on the API call.",article.original_url)
             return
 
-
-        print body
-        # publish
+        # publish, it's not there!
 
