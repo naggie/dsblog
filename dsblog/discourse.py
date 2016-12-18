@@ -162,6 +162,7 @@ class Discourse():
 
     def publish(self,article):
         "Lazily publish/update an article. Only publish if A) local cache doesn't contain article at revision and B) nor does discourse"
+        # TODO support updating
 
         header = yaml.dump({
             'url':article.original_url,
@@ -174,7 +175,17 @@ class Discourse():
         # article body with get_meta
         body = u"```\n{0}\n```{1}".format(header,article.body)
 
+
         # already here?
+        for existing in self.articles:
+            if article.original_url == existing.original_url:
+                return
+
+        # from discourse in the first place (should have already been caught --
+        # failsafe)
+        if article.original_url.startswith(self.url):
+            return
+
 
         #print body
         # publish
