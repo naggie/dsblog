@@ -195,7 +195,7 @@ class Discourse():
         self.crawled = True
 
     def publish(self,article):
-        "Lazily publish/update an article. Only publish if A) local cache doesn't contain article at revision and B) nor does discourse"
+        "EXPERIMENTAL: Lazily publish/update an article. Only publish if A) local cache doesn't contain article at revision and B) nor does discourse"
         # TODO support updating
 
         if not self.crawled:

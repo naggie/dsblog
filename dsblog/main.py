@@ -60,9 +60,9 @@ def main():
     for kwargs in config['feed_import']:
         database.assert_articles( feed.crawl(**kwargs) )
 
-    if config['import_to_discourse']:
-        for article in sorted(database.get_article_list(),reverse=True):
-            discourse.publish(article)
+    #if config['import_to_discourse']:
+    #    for article in sorted(database.get_article_list(),reverse=True):
+    #        discourse.publish(article)
 
     database.save()
 

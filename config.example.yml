@@ -2,7 +2,7 @@ site_name: Darksky blog
 strapline:
 base_url: https://darksky.io/
 
-description: >
+site_description: >
   Darksky.io is an Electronics, Electrical and Software consultancy based in
   the UK. It is also an invite-only discussion community, founded in 2010.
 
