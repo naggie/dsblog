@@ -109,7 +109,13 @@ def main():
 
 
     template = env.get_template('about.html')
-    filepath = join(config['output_dir'],'about.html')
+    directory = join(config['output_dir'],'about')
+
+    if not isdir(directory):
+        mkdir(directory)
+
+    filepath = join(directory,'index.html')
+
     template.stream(
             profiles=database.get_profile_list(publishers_only=True),
     ).dump(filepath)
