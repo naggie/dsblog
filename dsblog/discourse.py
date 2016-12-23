@@ -34,12 +34,12 @@ log = logging.getLogger(__name__)
 
 
 def get_meta(html):
-    'parse yaml from first HTML code block'
+    'parse yaml from last HTML code block'
     content = BeautifulSoup(html,'html.parser')
 
-    raw = content.find('code')
-
-    if not raw:
+    try:
+        raw = content.find_all('code')[-1]
+    except IndexError:
         return {}
 
     return yaml.load(raw.string)
@@ -194,6 +194,7 @@ class Discourse():
 
         self.crawled = True
 
+    # TODO these should not be treated as articles by the rest of the system as they are VERY contaminated
     def publish(self,article):
         "EXPERIMENTAL: Lazily publish/update an article. Only publish if A) local cache doesn't contain article at revision and B) nor does discourse"
         # TODO support updating
@@ -208,7 +209,6 @@ class Discourse():
         header = yaml.dump({
             'url':article.original_url,
             'revision':article.revision,
-            'pubdate':article.pubdate,
             'username':article.username,
             'title':article.title,
         },default_flow_style=False)
@@ -226,10 +226,8 @@ class Discourse():
             )
 
         # necessary hacks for proper display
-        body = body.replace('<pre><code>','\n```\n')
-        body = body.replace('</pre></code>','\n```\n')
-        body = body.replace('<code>','`')
-        body = body.replace('</code>','`')
+        body = body.replace('<code>','')
+        body = body.replace('</code>','')
 
         # already here?
         for existing in self.articles:
@@ -253,8 +251,10 @@ class Discourse():
         log.info('Publishing %s to discourse',article.original_url)
 
         self.post('posts',
-            title='{0} - {1}'.format(article.title,article.pubdate.strftime('%d/%m/%Y')),
+            title='Imported: {0} - {1}'.format(article.title,article.pubdate.strftime('%d/%m/%Y')),
             raw=body,
             category=self.category,
+            skip_validations='true',
+            created_at=article.pubdate.isoformat(),
             )
 
