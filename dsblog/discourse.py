@@ -186,7 +186,7 @@ class Discourse():
                     name=p["name"],
                     title=p["title"],
                     avatar=self.url+p["avatar_template"].format(size=200),
-                    bio=p["bio_cooked"],
+                    bio=p.get("bio_cooked",''),
                     website=p.get("website"),
                     #invited_by=p["invited_by"]["username"] if p.get("invited_by") else None,
                     #attributes={}, # links to twitter, linkedin, etc
