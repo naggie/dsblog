@@ -165,7 +165,7 @@ class Discourse():
             # override as meta header knows best!
             kwargs.update(meta)
 
-            if meta.get('original_url') or meta.get('imported'):
+            if meta.get('url') or meta.get('imported'):
                 # this was imported into disccourse (implicit detection deprecated)
                 # discourse has almost certainly altered the HTML and replaced
                 # images with local copies
