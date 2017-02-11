@@ -165,6 +165,12 @@ class Discourse():
             # override as meta header knows best!
             kwargs.update(meta)
 
+            if meta.get('original_url') or meta.get('imported'):
+                # this was imported into disccourse (implicit detection deprecated)
+                # discourse has almost certainly altered the HTML and replaced
+                # images with local copies
+                kwargs['degraded'] = True
+
             self.usernames.add(kwargs['username'])
 
             self.articles.append(Article(**kwargs))
@@ -211,6 +217,7 @@ class Discourse():
             'revision':article.revision,
             'username':article.username,
             'title':article.title,
+            'imported':True,
         },default_flow_style=False)
 
         # will end up in pre/code tags so that this can be parsed from the

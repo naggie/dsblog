@@ -133,15 +133,27 @@ class ArticleImage(object):
 
 class Article(object):
     # unique by article_url
-    def __init__(self,body,username,url,pubdate,title='',full=True,revision=None):
+    def __init__(self,body,username,url,pubdate,title='',full=True,revision=None,degraded=False):
         'Requires fully qualified image URLs and links. URL must also be fully qualified.'
         self.body = body # original, always
         self.title = title
         self.username = username
+
+        # the original source, despite importing etc
         self.original_url = url
+
+        # the website it came from without specific link
         self.origin = urlparse(url).netloc
+
+        # the date the article was originally published, not updated
         self.pubdate = pubdate
+
+        # is this a full article and not an excerpt? (before the fold)
         self.full = full
+
+        # is this a "copy of a copy" -- not the original. EG, imported into
+        # discourse and possibly processed in a lossy way
+        self.degraded = degraded
 
         self.slug = re.sub(r'[^0-9a-zA-Z]+','-',title).lower()+'-'+sha256(title).hexdigest()[:6]
 
@@ -149,6 +161,7 @@ class Article(object):
         #self.url = '%s.html' % self.slug
         self.full_url = join(config['base_url'],self.url)
 
+        # for cache invalidation
         self.revision = revision or hash(title+body)
 
         # ORDERED list of ArticleImage objects.
