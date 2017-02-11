@@ -43,7 +43,7 @@ class Database(object):
         for article in articles:
             try:
                 existing = self.articles[article.original_url]
-                if article.revision != existing.revision:
+                if article.revision != existing.revision and not getattr(article,'degraded',False):
                     log.info('Article updated:  %s',article.original_url)
                     article.process()
                     self.articles[article.original_url] = article
