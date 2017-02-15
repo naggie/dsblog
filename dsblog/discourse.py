@@ -171,6 +171,10 @@ class Discourse():
                 # images with local copies
                 kwargs['degraded'] = True
 
+            # invalid
+            if 'imported' in kwargs:
+                del kwargs['imported']
+
             self.usernames.add(kwargs['username'])
 
             self.articles.append(Article(**kwargs))
