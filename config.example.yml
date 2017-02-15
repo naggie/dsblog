@@ -4,6 +4,8 @@ logo: static/darksky-light-bg.svg
 logo_size: [200,127]
 background: none
 base_url: https://darksky.io/
+logo_link: https://darksky.io/
+enable_about_page: true
 
 site_description: >
   Darksky.io is an Electronics, Electrical and Software consultancy based in

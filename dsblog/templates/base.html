@@ -1,9 +1,5 @@
 <!DOCTYPE html>
 <!-- Want to join us? Email root at this domain -->
-{% set nav_links = [
-    ('Blog','.'),
-    ('About','about/'),
-] -%}
 {# TODO automatically process logo (aspect ratio, size limits) -#}
 {% set logo_url = "/static/darksky-light-bg.svg" -%}
 {# TODO: this! -#}
@@ -94,18 +90,20 @@
     </head>
     <!-- hack to make :active work on touch -->
     <body onmouseover="">
-        <nav>
-            {% block nav %}
-            <a href=".">
-            {% if logo %}<img alt="logo" src="{{logo}}" width="{{logo_size[0]}}" height="{{logo_size[1]}}" />{% endif %}
-            </a>
-            {% if strapline %}<h2>{{strapline}}</h2>{% endif %}
-            <br />
-            {% for name,url in nav_links + extra_links %}
-            <a{% if name == selected_link %} class="selected"{% endif%} href="{{url}}">{{name}}</a>
-            {% endfor %}
-            {% endblock nav %}
-        </nav>
+            <nav>
+                {% block nav %}
+                <a href=".">
+                {% if logo %}<img alt="logo" src="{{logo}}" width="{{logo_size[0]}}" height="{{logo_size[1]}}" />{% endif %}
+                </a>
+                {% if strapline %}<h2>{{strapline}}</h2>{% endif %}
+                <br />
+                {% if nav_links %}
+                    {% for name,url in nav_links %}
+                    <a{% if name == selected_link %} class="selected"{% endif%} href="{{url}}">{{name}}</a>
+                    {% endfor %}
+                {% endif %}
+                {% endblock nav %}
+            </nav>
         <div id="content">
             {% block content %}
             {% endblock content %}
