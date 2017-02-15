@@ -81,6 +81,8 @@ def main():
     env.globals["copyright_from"] = config["copyright_from"]
     env.globals["footer_msg"] = config["footer_msg"]
     env.globals["strapline"] = config["strapline"]
+    env.globals["logo"] = config["logo"]
+    env.globals["logo_size"] = config["logo_size"]
     env.globals["background"] = config["background"]
 
 

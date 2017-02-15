@@ -97,7 +97,7 @@
         <nav>
             {% block nav %}
             <a href=".">
-                <img alt="logo" height="200" width="316" src="{{logo_url}}" />
+            {% if logo %}<img alt="logo" src="{{logo}}" width="{{logo_size[0]}}" height="{{logo_size[1]}}" />{% endif %}
             </a>
             {% if strapline %}<h2>{{strapline}}</h2>{% endif %}
             <br />

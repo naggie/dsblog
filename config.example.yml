@@ -1,5 +1,7 @@
 site_name: Darksky blog
 strapline:
+logo: static/darksky-light-bg.svg
+logo_size: [200,127]
 background: none
 base_url: https://darksky.io/
 
