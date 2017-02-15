@@ -83,6 +83,7 @@ def main():
     env.globals["strapline"] = config["strapline"]
     env.globals["logo"] = config["logo"]
     env.globals["logo_size"] = config["logo_size"]
+    env.globals["logo_link"] = config["logo_link"]
     env.globals["background"] = config["background"]
 
     nav_links = [

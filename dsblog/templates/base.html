@@ -92,7 +92,7 @@
     <body onmouseover="">
             <nav>
                 {% block nav %}
-                <a href=".">
+                <a href="{{logo_link|default(".")}}">
                 {% if logo %}<img alt="logo" src="{{logo}}" width="{{logo_size[0]}}" height="{{logo_size[1]}}" />{% endif %}
                 </a>
                 {% if strapline %}<h2>{{strapline}}</h2>{% endif %}
