@@ -81,6 +81,7 @@ def main():
     env.globals["copyright_from"] = config["copyright_from"]
     env.globals["footer_msg"] = config["footer_msg"]
     env.globals["strapline"] = config["strapline"]
+    env.globals["background"] = config["background"]
 
 
     template = env.get_template('blog.html')

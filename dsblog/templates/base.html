@@ -53,6 +53,7 @@
         {#
         <style>
             /* Load font faster by not depending on main CSS first */
+            /* CDN is used instead of local font files. */
             @font-face {
                 font-family: 'Raleway';
                 font-style: normal;
@@ -63,6 +64,11 @@
             }
         </style>
         #}
+        <style>
+            body {
+                background:{{background|default("none")}};
+            }
+        </style>
 
         <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7CRaleway:400" />
 

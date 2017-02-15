@@ -1,5 +1,6 @@
 site_name: Darksky blog
 strapline:
+background: none
 base_url: https://darksky.io/
 
 site_description: >
