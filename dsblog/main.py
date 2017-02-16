@@ -92,12 +92,13 @@ def main():
     if config.get("enable_about_page",True):
         nav_links.append(('About','about/'))
 
-    nav_links.append(config["extra_links"])
+    nav_links += config["extra_links"]
 
     # one is useless
     if len(nav_links) == 1:
         nav_links = []
 
+    env.globals["nav_links"] = nav_links
 
     template = env.get_template('blog.html')
     filepath = join(config['output_dir'],'index.html')
